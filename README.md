@@ -83,4 +83,8 @@ Feel free to reach out to me for project discussions, collaborations, or opportu
 ---
 Designed & engineered with ❤️ by Angad Sharma. © 2025-2026
 
+<<<<<<< HEAD
 Date :- 27/06/2026
+=======
+Date :- 27/06/2026
+>>>>>>> 6c46798 (update)
