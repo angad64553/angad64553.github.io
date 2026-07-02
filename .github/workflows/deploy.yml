@@ -16,10 +16,25 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          port: 22
           script: |
+            set -e
+
             cd /var/www/html
+
+            # Clone only if repository is not already present
             if [ ! -d ".git" ]; then
-              git clone git@github.com:angad64553/portfolio-website.git .
+              git clone git@github.com:angad64553/angad64553.github.io.git .
             fi
-            git fetch origin
+
+            # Ensure correct remote
+            git remote set-url origin git@github.com:angad64553/angad64553.github.io.git
+
+            # Pull latest code
+            git fetch origin main
             git reset --hard origin/main
+
+            # Correct permissions
+            sudo chown -R ubuntu:ubuntu /var/www/html
+
+            echo "✅ Deployment completed successfully!"
