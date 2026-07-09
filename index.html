@@ -558,11 +558,9 @@
                 </div>
                 <!-- Right — Form -->
                 <div class="contact-form-wrapper">
-                    <form action="https://formsubmit.co/angad64553@gmail.com" method="POST" id="feedback-form" class="contact-form glass-card">
-                        <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_template" value="table">
-                        <input type="hidden" name="_subject" value="New Portfolio Feedback">
-                        <input type="hidden" name="_next" value="https://angad64553.github.io/portfolio-website/thankyou.html">
+                    <form action="https://api.web3forms.com/submit" method="POST" id="feedback-form" class="contact-form glass-card">
+                        <input type="hidden" name="access_key" value="3fcfdc96-8a6f-4fb6-882e-8a579b7f0fc6">
+                        <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display: none;">
                         <div class="form-group">
                             <label for="form-name">Name</label>
                             <input type="text" name="name" id="form-name" placeholder="Your Name" required>
@@ -582,6 +580,7 @@
                         <button type="submit" class="btn btn-primary btn-submit" id="form-submit">
                             <i class="ri-send-plane-line"></i> Send Message
                         </button>
+                        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
                     </form>
                 </div>
             </div>

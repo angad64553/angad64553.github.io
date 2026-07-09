@@ -703,6 +703,9 @@
   const initFormValidation = () => {
     const form = document.getElementById('feedback-form');
     if (!form) return;
+    const status = document.getElementById('form-status');
+    const btn = form.querySelector('button[type="submit"]');
+    const originalButtonContent = btn?.innerHTML || '';
 
     const markInvalid = (field) => {
       field.style.borderColor = '#ef4444';
@@ -717,7 +720,7 @@
       field.addEventListener('focus', () => clearInvalid(field));
     });
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       let valid = true;
 
       form.querySelectorAll('[required]').forEach((field) => {
@@ -734,11 +737,47 @@
         return;
       }
 
-      // Show sending state — let the form submit naturally (formsubmit.co)
-      const btn = form.querySelector('button[type="submit"]');
+      e.preventDefault();
+      status?.classList.remove('is-success', 'is-error');
+      if (status) status.textContent = '';
+
       if (btn) {
         btn.disabled = true;
-        btn.textContent = 'Sending...';
+        btn.innerHTML = '<i class="ri-loader-4-line"></i> Sending...';
+      }
+
+      try {
+        const endpoint = form.action;
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok || result.success !== true) {
+          throw new Error('Form submission failed');
+        }
+
+        form.reset();
+        if (status) {
+          status.textContent = 'Message sent successfully. I will get back to you soon.';
+          status.classList.add('is-success');
+        }
+      } catch (error) {
+        if (status) {
+          status.innerHTML = 'Message could not be sent right now. Please try again shortly or <a href="mailto:angad64553@gmail.com">email me directly</a>.';
+          status.classList.add('is-error');
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalButtonContent;
+        }
       }
     });
   };

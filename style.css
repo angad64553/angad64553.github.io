@@ -950,6 +950,27 @@ body.js-enabled .reveal.active,
     border-radius: 16px;
 }
 
+.form-status {
+    min-height: 1.7rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.form-status.is-success {
+    color: var(--accent-green);
+}
+
+.form-status.is-error {
+    color: #fca5a5;
+}
+
+.form-status a {
+    color: var(--accent-cyan);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
 /* ══════════════════════════════════════════
    STATS BAR
    ══════════════════════════════════════════ */
