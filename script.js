@@ -71,14 +71,14 @@
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    const COLORS = ['#00f5ff', '#8b5cf6', '#ec4899'];
+    const COLORS = ['#38bdf8', '#7dd3fc', '#e2e8f0'];
 
     let width, height, particles;
     let particleCount, connectDist, mouseDist;
 
     const updateSettings = () => {
       const isMobile = window.innerWidth < 768 || isTouchDevice();
-      particleCount = isMobile ? 15 : 100;
+      particleCount = isMobile ? 15 : 78;
       connectDist = isMobile ? 0 : 120;   // disable O(n²) connections on mobile
       mouseDist = isMobile ? 0 : 180;
     };
@@ -93,12 +93,13 @@
     const createParticle = () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      size: Math.random() * 2 + 0.5,
+      vx: (Math.random() - 0.5) * 0.24,
+      vy: (Math.random() - 0.5) * 0.24,
+      size: Math.random() * 1.6 + 0.4,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      alpha: Math.random(),
-      alphaDir: (Math.random() < 0.5 ? 1 : -1) * (Math.random() * 0.008 + 0.003),
+      baseAlpha: Math.random() * 0.45 + 0.3,
+      twinkleSpeed: Math.random() * 1.2 + 0.55,
+      twinklePhase: Math.random() * Math.PI * 2,
     });
 
     /** Seed all particles */
@@ -109,7 +110,7 @@
     /** Animation loop */
     let animId;
 
-    const tick = () => {
+    const tick = (now = 0) => {
       ctx.clearRect(0, 0, width, height);
 
       const len = particles.length;
@@ -134,10 +135,9 @@
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
 
-        // Fade in / out
-        p.alpha += p.alphaDir;
-        if (p.alpha <= 0.1 || p.alpha >= 1) p.alphaDir *= -1;
-        p.alpha = Math.max(0, Math.min(1, p.alpha));
+        // Gentle, asynchronous star twinkle avoids abrupt background flashing.
+        const twinkle = 0.58 + Math.sin((now * 0.001 * p.twinkleSpeed) + p.twinklePhase) * 0.42;
+        p.alpha = p.baseAlpha * twinkle;
 
         // Draw particle
         ctx.beginPath();
@@ -244,7 +244,101 @@
   };
 
   /* ================================================================
-     4. STICKY HEADER
+     4. CURSOR RETICLE AND MAGNETIC ACTIONS
+     ================================================================ */
+
+  const initMouseEffects = () => {
+    if (isTouchDevice() || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const reticle = document.createElement('div');
+    reticle.className = 'cursor-reticle';
+    reticle.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(reticle);
+
+    let frame = null;
+    let x = -100;
+    let y = -100;
+    const renderReticle = () => {
+      reticle.style.setProperty('--cursor-x', `${x}px`);
+      reticle.style.setProperty('--cursor-y', `${y}px`);
+      reticle.classList.add('is-visible');
+      frame = null;
+    };
+
+    document.addEventListener('mousemove', (event) => {
+      x = event.clientX;
+      y = event.clientY;
+      if (!frame) frame = requestAnimationFrame(renderReticle);
+    });
+
+    document.addEventListener('mouseleave', () => reticle.classList.remove('is-visible'));
+    document.addEventListener('mouseenter', () => reticle.classList.add('is-visible'));
+    document.addEventListener('mousedown', () => reticle.classList.add('is-pressed'));
+    document.addEventListener('mouseup', () => reticle.classList.remove('is-pressed'));
+
+    const activeTargets = document.querySelectorAll([
+      'a',
+      'button',
+      '.project-card',
+      '.showcase-card',
+      '.skill-item',
+      '.cert-card',
+      '.edu-card',
+      '.timeline-content',
+      '.contact-card',
+    ].join(','));
+
+    activeTargets.forEach((target) => {
+      target.addEventListener('mouseenter', () => reticle.classList.add('is-active'));
+      target.addEventListener('mouseleave', () => reticle.classList.remove('is-active'));
+    });
+
+    document.querySelectorAll('.btn').forEach((button) => {
+      button.addEventListener('mousemove', (event) => {
+        const rect = button.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left - rect.width / 2;
+        const offsetY = event.clientY - rect.top - rect.height / 2;
+        button.style.setProperty('--magnetic-x', `${offsetX * 0.14}px`);
+        button.style.setProperty('--magnetic-y', `${offsetY * 0.14}px`);
+      });
+
+      button.addEventListener('mouseleave', () => {
+        button.style.setProperty('--magnetic-x', '0px');
+        button.style.setProperty('--magnetic-y', '0px');
+      });
+    });
+  };
+
+  /* ================================================================
+     5. SCROLL PROGRESS
+     ================================================================ */
+
+  const initScrollProgress = () => {
+    const progress = document.createElement('div');
+    progress.className = 'scroll-progress';
+    progress.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(progress);
+
+    let ticking = false;
+    const update = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const value = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+      progress.style.setProperty('--scroll-progress', String(Math.min(value, 1)));
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  };
+
+  /* ================================================================
+     6. STICKY HEADER
      ================================================================ */
 
   const initStickyHeader = () => {
@@ -267,7 +361,7 @@
   };
 
   /* ================================================================
-     5. MOBILE NAVIGATION
+     7. MOBILE NAVIGATION
      ================================================================ */
 
   const initMobileNav = () => {
@@ -309,7 +403,7 @@
   };
 
   /* ================================================================
-     6. SCROLL REVEAL  (IntersectionObserver)
+     8. SCROLL REVEAL  (IntersectionObserver)
      ================================================================ */
 
   const initScrollReveal = () => {
@@ -364,7 +458,7 @@
   };
 
   /* ================================================================
-     7. COUNTER ANIMATION
+     9. COUNTER ANIMATION
      ================================================================ */
 
   const initCounters = () => {
@@ -417,7 +511,7 @@
   };
 
   /* ================================================================
-     8. TYPEWRITER EFFECT
+     10. TYPEWRITER EFFECT
      ================================================================ */
 
   const initTypewriter = () => {
@@ -473,7 +567,7 @@
   };
 
   /* ================================================================
-     9. PROJECT CARD 3D TILT
+     11. PROJECT CARD 3D TILT
      ================================================================ */
 
   const initCardTilt = () => {
@@ -514,39 +608,49 @@
   };
 
   /* ================================================================
-     10. ACTIVE NAV HIGHLIGHTING
+     12. ACTIVE NAV HIGHLIGHTING
      ================================================================ */
 
   const initActiveNav = () => {
-    const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('nav a[href^="#"]');
-    if (!sections.length || !navLinks.length) return;
+    if (!navLinks.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
+    const sectionIds = Array.from(navLinks, (link) => link.getAttribute('href').slice(1));
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    if (!sections.length) return;
 
-          const id = entry.target.getAttribute('id');
-          navLinks.forEach((link) => {
-            link.classList.toggle(
-              'active',
-              link.getAttribute('href') === `#${id}`
-            );
-          });
-        });
-      },
-      {
-        threshold: 0.3,
-        rootMargin: '-80px 0px -40% 0px',
+    let ticking = false;
+    const update = () => {
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const activationLine = headerHeight + (window.innerHeight * 0.28);
+      let activeId = sections[0].id;
+
+      sections.forEach((section) => {
+        if (section.getBoundingClientRect().top <= activationLine) {
+          activeId = section.id;
+        }
+      });
+
+      navLinks.forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${activeId}`);
+      });
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
       }
-    );
-
-    sections.forEach((s) => observer.observe(s));
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
   };
 
   /* ================================================================
-     11. SMOOTH SCROLL
+     13. SMOOTH SCROLL
      ================================================================ */
 
   const initSmoothScroll = () => {
@@ -565,7 +669,7 @@
   };
 
   /* ================================================================
-     12. BACK TO TOP
+     14. BACK TO TOP
      ================================================================ */
 
   const initBackToTop = () => {
@@ -593,7 +697,7 @@
   };
 
   /* ================================================================
-     13. FORM VALIDATION
+     15. FORM VALIDATION
      ================================================================ */
 
   const initFormValidation = () => {
@@ -640,7 +744,7 @@
   };
 
   /* ================================================================
-     14. PROJECT CARD HOVER GLOW (injected style)
+     16. PROJECT CARD HOVER GLOW (injected style)
      ================================================================ */
 
   const initProjectGlowStyle = () => {
@@ -675,7 +779,7 @@
   };
 
   /* ================================================================
-     15. PARALLAX ORBS
+     17. PARALLAX ORBS
      ================================================================ */
 
   const initParallaxOrbs = () => {
@@ -711,7 +815,7 @@
   };
 
   /* ================================================================
-     16. HERO SHOWCASE SPOTLIGHT
+     18. HERO SHOWCASE SPOTLIGHT
      ================================================================ */
 
   const initHeroShowcase = () => {
@@ -735,6 +839,54 @@
   };
 
   /* ================================================================
+     19. POINTER SPOTLIGHTS
+     ================================================================ */
+
+  const initPointerSpotlights = () => {
+    if (isTouchDevice() || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const surfaces = document.querySelectorAll([
+      '.showcase-card',
+      '.project-card',
+      '.stat-card',
+      '.skill-item',
+      '.cert-card',
+      '.edu-card',
+      '.timeline-content',
+      '.contact-card',
+      '.btn',
+    ].join(','));
+
+    surfaces.forEach((surface) => {
+      surface.classList.add('mouse-surface');
+      let frame = null;
+      let x = 50;
+      let y = 50;
+
+      const render = () => {
+        surface.style.setProperty('--pointer-x', `${x}px`);
+        surface.style.setProperty('--pointer-y', `${y}px`);
+        frame = null;
+      };
+
+      surface.addEventListener('mousemove', (event) => {
+        const rect = surface.getBoundingClientRect();
+        x = event.clientX - rect.left;
+        y = event.clientY - rect.top;
+        if (!frame) frame = requestAnimationFrame(render);
+      });
+
+      surface.addEventListener('mouseenter', () => {
+        surface.classList.add('pointer-active');
+      });
+
+      surface.addEventListener('mouseleave', () => {
+        surface.classList.remove('pointer-active');
+      });
+    });
+  };
+
+  /* ================================================================
      INIT — Kick everything off on DOMContentLoaded
      ================================================================ */
 
@@ -743,6 +895,8 @@
       initPreloader();
       initParticles();
       initCursorGlow();
+      initMouseEffects();
+      initScrollProgress();
       initStickyHeader();
       initMobileNav();
       initScrollReveal();
@@ -756,6 +910,7 @@
       initProjectGlowStyle();
       initParallaxOrbs();
       initHeroShowcase();
+      initPointerSpotlights();
     } catch (error) {
       console.error('Portfolio startup failed:', error);
       document.getElementById('preloader')?.remove();
