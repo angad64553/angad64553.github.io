@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="g" cx="25%" cy="15%" r="80%"><stop offset="0" stop-color="#303652"/><stop offset=".55" stop-color="#111216"/><stop offset="1" stop-color="#0a0a0b"/></radialGradient>
+    <pattern id="p" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0v52" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <rect width="1200" height="630" fill="url(#p)"/>
+  <circle cx="1040" cy="95" r="42" fill="none" stroke="#9ea8ff" stroke-opacity=".6"/>
+  <circle cx="1040" cy="95" r="8" fill="#9ea8ff"/>
+  <text x="80" y="118" fill="#c7ccff" font-family="monospace" font-size="18" letter-spacing="4">LMS ASSOCIATE • PHP DEVELOPER</text>
+  <text x="74" y="300" fill="#f2f0eb" font-family="Arial, sans-serif" font-size="104" font-weight="500" letter-spacing="-6">Angad Sharma</text>
+  <text x="80" y="374" fill="#a6a5a1" font-family="Arial, sans-serif" font-size="34">Engineering learning systems that work in the real world.</text>
+  <line x1="80" y1="500" x2="1120" y2="500" stroke="#fff" stroke-opacity=".12"/>
+  <text x="80" y="552" fill="#72716e" font-family="monospace" font-size="17">MOODLE · PHP · MYSQL · JAVASCRIPT</text>
+  <text x="1120" y="552" fill="#f2f0eb" font-family="monospace" font-size="17" text-anchor="end">ANGAD07.COM</text>
+</svg>

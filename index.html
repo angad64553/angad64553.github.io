@@ -1,617 +1,479 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Angad Sharma | SDE @AeroBay | PHP Developer | Portfolio</title>
-    <meta name="description" content="Angad Sharma — SDE @AeroBay, PHP Developer & Moodle LMS Specialist. Explore projects, skills, and experience in web development, LMS customization, and database management.">
-    <meta name="keywords" content="Angad Sharma, PHP Developer, Moodle LMS, SDE, AeroBay, Portfolio, Web Developer, Full Stack">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Angad Sharma — LMS &amp; PHP Developer</title>
+    <meta name="description" content="Angad Sharma is an LMS Associate and PHP developer building reliable Moodle platforms, role-aware workflows, dashboards, and reporting systems.">
     <meta name="author" content="Angad Sharma">
-    <meta property="og:title" content="Angad Sharma | SDE @AeroBay | PHP Developer | Portfolio">
-    <meta property="og:description" content="Angad Sharma — SDE @AeroBay, PHP Developer & Moodle LMS Specialist. Explore projects, skills, and experience.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0a0a0b">
+    <link rel="canonical" href="https://angad07.com/">
+
     <meta property="og:type" content="website">
-    <meta name="theme-color" content="#6c63ff">
+    <meta property="og:url" content="https://angad07.com/">
+    <meta property="og:title" content="Angad Sharma — LMS &amp; PHP Developer">
+    <meta property="og:description" content="Engineering focused learning platforms, custom Moodle workflows, and dependable web products.">
+    <meta property="og:image" content="https://angad07.com/og-image.svg">
+    <meta property="og:image:alt" content="Angad Sharma, LMS and PHP Developer">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Angad Sharma — LMS &amp; PHP Developer">
+    <meta name="twitter:description" content="Engineering focused learning platforms, custom Moodle workflows, and dependable web products.">
+    <meta name="twitter:image" content="https://angad07.com/og-image.svg">
+
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    
-    <!-- ===== FONTS & ICONS ===== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Angad Sharma",
+        "url": "https://angad07.com/",
+        "email": "mailto:angad64553@gmail.com",
+        "jobTitle": "LMS Associate and PHP Developer",
+        "worksFor": {
+            "@type": "Organization",
+            "name": "AeroBay (Aviotron Aerospace Pvt Ltd)"
+        },
+        "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "SR Institute of Management & Technology"
+        },
+        "sameAs": [
+            "https://github.com/angad64553",
+            "https://www.linkedin.com/in/angad-sharma-64553-"
+        ],
+        "knowsAbout": ["Moodle LMS", "PHP", "MySQL", "JavaScript", "Web development"]
+    }
+    </script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
-    <!-- ===== PARTICLE BACKGROUND ===== -->
-    <canvas id="particles"></canvas>
+    <header class="site-header" id="site-header">
+        <nav class="nav shell" aria-label="Main navigation">
+            <a class="brand magnetic" href="#home" aria-label="Angad Sharma, home">
+                <span class="brand-mark">AS</span>
+                <span class="brand-copy">Angad Sharma<small>Engineer</small></span>
+            </a>
 
-    <!-- ===== AMBIENT ORB GLOW ===== -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+            <div class="nav-menu" id="nav-menu">
+                <a class="nav-link" href="#about">About</a>
+                <a class="nav-link" href="#skills">Expertise</a>
+                <a class="nav-link" href="#experience">Experience</a>
+                <a class="nav-link" href="#projects">Work</a>
+                <a class="nav-link" href="#contact">Contact</a>
+            </div>
 
-    <!-- ===== HEADER / NAVBAR ===== -->
-    <header id="navbar">
-        <nav class="nav-container">
-            <a href="#" class="logo" id="logo">&lt;A.S /&gt;</a>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#education" class="nav-link">Education</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu">
-                <span></span>
-                <span></span>
-                <span></span>
+            <a class="nav-cta magnetic" href="#contact">Let’s talk <span aria-hidden="true">↗</span></a>
+            <button class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="nav-menu" aria-expanded="false">
+                <span></span><span></span>
             </button>
         </nav>
     </header>
 
-    <!-- ===== MOBILE NAV OVERLAY ===== -->
-    <div class="mobile-nav" id="mobile-nav">
-        <ul class="mobile-nav-links">
-            <li><a href="#about" class="mobile-nav-link">About</a></li>
-            <li><a href="#skills" class="mobile-nav-link">Skills</a></li>
-            <li><a href="#experience" class="mobile-nav-link">Experience</a></li>
-            <li><a href="#projects" class="mobile-nav-link">Projects</a></li>
-            <li><a href="#education" class="mobile-nav-link">Education</a></li>
-            <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
-        </ul>
-    </div>
-
-    <main>
-
-        <!-- ===== HERO SECTION ===== -->
-        <section class="hero reveal" id="hero">
-            <div class="hero-content">
-                <div class="hero-copy">
-                    <span class="hero-badge"><i class="ri-building-2-line"></i> SDE @AeroBay</span>
-                    <p class="hero-greeting">Hello, I'm</p>
-                    <h1 class="hero-name"><span class="gradient-text">Angad Sharma</span></h1>
-                    <h2 class="hero-typewriter">
-                        <span class="typewriter-text" id="typewriter"></span>
-                        <span class="typewriter-cursor">|</span>
-                    </h2>
-                    <p class="hero-description">
-                        A passionate LMS Associate &amp; PHP Developer crafting robust Moodle-based learning platforms,
-                        custom dashboards, and scalable web solutions.
-                    </p>
-                    <div class="hero-ctas">
-                        <a href="#contact" class="btn btn-primary" id="cta-contact">
-                            <i class="ri-mail-send-line"></i> Get In Touch
-                        </a>
-                        <a href="#projects" class="btn btn-ghost" id="cta-projects">
-                            <i class="ri-folder-3-line"></i> View Projects
-                        </a>
-                    </div>
+    <main id="main-content">
+        <section class="hero shell" id="home" aria-labelledby="hero-title">
+            <div class="hero-copy reveal">
+                <div class="availability">
+                    <span class="availability-dot" aria-hidden="true"></span>
+                    Available for thoughtful opportunities
                 </div>
-                <div class="hero-showcase" aria-label="Portfolio highlights">
-                    <div class="showcase-card glass-card">
-                        <div class="showcase-orbit"></div>
-                        <div class="terminal-topbar">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <strong>portfolio.engine</strong>
-                        </div>
-                        <div class="terminal-body">
-                            <div class="terminal-line"><span class="terminal-key">role</span><span>LMS Associate / PHP Developer</span></div>
-                            <div class="terminal-line"><span class="terminal-key">focus</span><span>Moodle dashboards + reports</span></div>
-                            <div class="terminal-line"><span class="terminal-key">stack</span><span>PHP, MySQL, JS, Bootstrap</span></div>
-                            <div class="terminal-line terminal-success"><span class="terminal-key">status</span><span>Production-ready learner experiences</span></div>
-                        </div>
-                        <div class="showcase-metrics">
-                            <div class="metric-ring" style="--value: 92;">
-                                <span>92%</span>
-                                <small>Backend</small>
-                            </div>
-                            <div class="metric-ring" style="--value: 86;">
-                                <span>86%</span>
-                                <small>UI</small>
-                            </div>
-                            <div class="metric-ring" style="--value: 90;">
-                                <span>90%</span>
-                                <small>LMS</small>
-                            </div>
-                        </div>
-                    </div>
+                <p class="eyebrow">LMS Associate <span>•</span> Moodle Developer <span>•</span> PHP Developer</p>
+                <h1 id="hero-title">Hi, I’m Angad Sharma.<br><span>I engineer learning systems that work in the real world.</span></h1>
+                <p class="hero-lede">I turn complex education workflows into focused, dependable software—from role-aware Moodle dashboards and reporting tools to the PHP and MySQL systems beneath them.</p>
+                <div class="hero-actions">
+                    <a class="button button-primary magnetic" href="#projects">View projects <span aria-hidden="true">↓</span></a>
+                    <a class="button button-secondary magnetic" href="resume.html" target="_blank" rel="noopener">Download résumé <span aria-hidden="true">↗</span></a>
                 </div>
-                <div class="scroll-indicator" id="scroll-indicator">
-                    <div class="scroll-mouse">
-                        <div class="scroll-dot"></div>
-                    </div>
-                    <span>Scroll Down</span>
+                <div class="hero-proof" aria-label="Professional highlights">
+                    <div><strong>Moodle</strong><span>Platform customization</span></div>
+                    <div><strong>PHP + MySQL</strong><span>Backend systems</span></div>
+                    <div><strong>Production</strong><span>Workflow ownership</span></div>
                 </div>
             </div>
+
+            <div class="hero-visual reveal" aria-label="Angad Sharma professional profile">
+                <div class="profile-stage" data-tilt>
+                    <div class="stage-grid" aria-hidden="true"></div>
+                    <div class="profile-monogram" aria-hidden="true">
+                        <span>AS</span>
+                        <div class="orbit orbit-one"></div>
+                        <div class="orbit orbit-two"></div>
+                    </div>
+
+                    <div class="floating-card role-card">
+                        <span class="card-kicker">Current focus</span>
+                        <strong>Learning infrastructure</strong>
+                        <small>Moodle · PHP · Systems</small>
+                    </div>
+
+                    <div class="floating-card build-card">
+                        <div class="build-head"><span>deployment</span><span class="build-status">healthy</span></div>
+                        <div class="code-line"><i></i><span>role workflows</span><b>ready</b></div>
+                        <div class="code-line"><i></i><span>reporting layer</span><b>ready</b></div>
+                        <div class="code-line"><i></i><span>learner UX</span><b>ready</b></div>
+                    </div>
+
+                    <div class="floating-card location-card">
+                        <span class="location-pin" aria-hidden="true"></span>
+                        <span>Noida, India</span>
+                        <small>Working across product &amp; engineering</small>
+                    </div>
+
+                    <div class="stage-caption"><span>01</span> Software with structure, clarity, and purpose.</div>
+                </div>
+            </div>
+
+            <a class="scroll-cue" href="#about" aria-label="Scroll to about section"><span></span>Scroll to explore</a>
         </section>
 
-        <section class="tech-ticker reveal" aria-label="Core technologies">
-            <div class="ticker-track">
-                <span>PHP</span>
-                <span>Moodle LMS</span>
-                <span>MySQL</span>
-                <span>JavaScript</span>
-                <span>Bootstrap</span>
-                <span>Git</span>
-                <span>.NET MVC</span>
-                <span>Reports</span>
-                <span>Dashboards</span>
-                <span>PHP</span>
-                <span>Moodle LMS</span>
-                <span>MySQL</span>
-                <span>JavaScript</span>
-                <span>Bootstrap</span>
-                <span>Git</span>
-                <span>.NET MVC</span>
-                <span>Reports</span>
-                <span>Dashboards</span>
+        <div class="trust-strip" aria-label="Core technologies">
+            <div class="shell trust-inner">
+                <span>PHP</span><i></i><span>Moodle LMS</span><i></i><span>MySQL</span><i></i><span>JavaScript</span><i></i><span>Git</span><i></i><span>Linux</span>
             </div>
-        </section>
+        </div>
 
-        <!-- ===== STATS BAR ===== -->
-        <section class="stats-bar reveal" id="stats-bar">
-            <div class="stat-card glass-card">
-                <span class="stat-number" data-target="3">0</span><span class="stat-plus">+</span>
-                <span class="stat-label">Certifications</span>
+        <section class="section shell" id="about" aria-labelledby="about-title">
+            <div class="section-intro reveal">
+                <p class="section-index">01 / About</p>
+                <h2 id="about-title">Engineering depth.<br><span>Product awareness.</span></h2>
+                <p>I work where platform logic meets human experience: understanding a workflow, finding the true source of friction, then shipping the smallest reliable solution.</p>
             </div>
-            <div class="stat-card glass-card">
-                <span class="stat-number" data-target="8">0</span><span class="stat-plus">+</span>
-                <span class="stat-label">Technologies</span>
-            </div>
-            <div class="stat-card glass-card">
-                <span class="stat-number" data-target="3">0</span><span class="stat-plus">+</span>
-                <span class="stat-label">Projects</span>
-            </div>
-            <div class="stat-card glass-card">
-                <span class="stat-number" data-target="2">0</span><span class="stat-plus">+</span>
-                <span class="stat-label">Companies</span>
-            </div>
-        </section>
 
-        <!-- ===== ABOUT ===== -->
-        <section id="about" class="section reveal">
-            <h2 class="section-title"><span class="section-number">01.</span> About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        I am a <strong>Learning Management System (LMS) Associate</strong> and <strong>PHP Developer</strong> 
-                        with hands-on experience in Moodle LMS customization, web development, and database management. 
-                        I work on developing and enhancing LMS solutions by implementing custom features, dashboards, 
-                        user management modules, attendance systems, reporting tools, and workflow automation.
-                    </p>
-                    <p>
-                        Currently working at <strong>AeroBay (Aviotron Aerospace Pvt Ltd)</strong> in Noida, 
-                        I leverage PHP, MySQL, JavaScript, and the Moodle framework to build scalable educational 
-                        technology solutions. My focus is on creating intuitive interfaces and efficient backend systems 
-                        that enhance the learning experience.
-                    </p>
-                </div>
+            <div class="story-grid">
+                <article class="story-card story-feature reveal">
+                    <div class="story-topline"><span>Today</span><span>AeroBay · Noida</span></div>
+                    <h3>Building dependable learning operations</h3>
+                    <p>As an LMS Associate, I develop and maintain Moodle experiences that support real users, role boundaries, attendance, enrollment, dashboards, reports, and day-to-day education workflows.</p>
+                    <div class="principles">
+                        <span>Inspect first</span><span>Design the system</span><span>Ship with confidence</span>
+                    </div>
+                    <div class="story-watermark" aria-hidden="true">01</div>
+                </article>
 
-                <div class="about-certifications">
-                    <h3 class="about-subtitle"><i class="ri-award-line"></i> Certifications</h3>
-                    <div class="cert-grid">
-                        <div class="cert-card glass-card">
-                            <div class="cert-icon"><i class="ri-global-line"></i></div>
-                            <h4>OCTANET</h4>
-                            <p>Web Development</p>
-                        </div>
-                        <div class="cert-card glass-card">
-                            <div class="cert-icon"><i class="ri-database-2-line"></i></div>
-                            <h4>IBM</h4>
-                            <p>Data Science</p>
-                        </div>
-                        <div class="cert-card glass-card">
-                            <div class="cert-icon"><i class="ri-code-s-slash-line"></i></div>
-                            <h4>CODTECH</h4>
-                            <p>Web Development</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="about-extras">
-                    <div class="pills-group">
-                        <h3 class="about-subtitle"><i class="ri-user-star-line"></i> Soft Skills</h3>
-                        <div class="pills">
-                            <span class="pill">Problem Solving</span>
-                            <span class="pill">Team Collaboration</span>
-                            <span class="pill">Communication</span>
-                            <span class="pill">Adaptability</span>
-                            <span class="pill">Time Management</span>
-                            <span class="pill">Attention to Detail</span>
-                        </div>
-                    </div>
-                    <div class="pills-group">
-                        <h3 class="about-subtitle"><i class="ri-translate-2"></i> Languages</h3>
-                        <div class="pills">
-                            <span class="pill">Hindi</span>
-                            <span class="pill">English</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== SKILLS ===== -->
-        <section id="skills" class="section reveal">
-            <h2 class="section-title"><span class="section-number">02.</span> Tech Stack</h2>
-            <div class="skills-grid">
-                <!-- Languages -->
-                <div class="skill-category">
-                    <h3 class="skill-category-title"><i class="ri-code-line"></i> Languages</h3>
-                    <div class="skill-items">
-                        <div class="skill-item glass-card">
-                            <i class="ri-code-s-slash-line"></i>
-                            <span>PHP</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-javascript-line"></i>
-                            <span>JavaScript</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-code-box-line"></i>
-                            <span>C#</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-cup-line"></i>
-                            <span>Java</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-html5-line"></i>
-                            <span>HTML5</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-css3-line"></i>
-                            <span>CSS3</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Frameworks -->
-                <div class="skill-category">
-                    <h3 class="skill-category-title"><i class="ri-stack-line"></i> Frameworks</h3>
-                    <div class="skill-items">
-                        <div class="skill-item glass-card">
-                            <i class="ri-graduation-cap-line"></i>
-                            <span>Moodle LMS</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-window-line"></i>
-                            <span>.NET MVC</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-layout-grid-line"></i>
-                            <span>Bootstrap</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-flashlight-line"></i>
-                            <span>jQuery</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Database -->
-                <div class="skill-category">
-                    <h3 class="skill-category-title"><i class="ri-database-2-line"></i> Database</h3>
-                    <div class="skill-items">
-                        <div class="skill-item glass-card">
-                            <i class="ri-server-line"></i>
-                            <span>MySQL</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Tools -->
-                <div class="skill-category">
-                    <h3 class="skill-category-title"><i class="ri-tools-line"></i> Tools</h3>
-                    <div class="skill-items">
-                        <div class="skill-item glass-card">
-                            <i class="ri-git-branch-line"></i>
-                            <span>Git</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-github-line"></i>
-                            <span>GitHub</span>
-                        </div>
-                        <div class="skill-item glass-card">
-                            <i class="ri-terminal-box-line"></i>
-                            <span>VS Code</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== EXPERIENCE ===== -->
-        <section id="experience" class="section reveal">
-            <h2 class="section-title"><span class="section-number">03.</span> Experience</h2>
-            <div class="timeline">
-                <!-- Entry 1 -->
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content glass-card">
-                        <span class="timeline-date"><i class="ri-calendar-line"></i> June 2026 – Present</span>
-                        <h3 class="timeline-title">LMS Associate</h3>
-                        <h4 class="timeline-company"><i class="ri-building-line"></i> AeroBay (Aviotron Aerospace Pvt Ltd) — Noida</h4>
-                        <ul class="timeline-list">
-                            <li>Develop, customize, and maintain Moodle-based LMS platforms</li>
-                            <li>Build custom modules, role-based access controls, dashboards, and reports</li>
-                            <li>Implement user management, attendance systems, and workflow automation</li>
-                        </ul>
-                        <div class="timeline-tags">
-                            <span class="tech-tag">PHP</span>
-                            <span class="tech-tag">MySQL</span>
-                            <span class="tech-tag">JavaScript</span>
-                            <span class="tech-tag">HTML</span>
-                            <span class="tech-tag">CSS</span>
-                            <span class="tech-tag">Bootstrap</span>
-                            <span class="tech-tag">Git</span>
-                            <span class="tech-tag">Moodle LMS</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Entry 2 -->
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content glass-card">
-                        <span class="timeline-date"><i class="ri-calendar-line"></i> April 2026 – June 2026</span>
-                        <h3 class="timeline-title">PHP &amp; Moodle Developer Intern</h3>
-                        <h4 class="timeline-company"><i class="ri-building-line"></i> AeroBay — Noida</h4>
-                        <ul class="timeline-list">
-                            <li>Moodle plugin development, bug fixes, and new feature implementation</li>
-                            <li>MySQL database architecture and performance optimization</li>
-                            <li>Collaborated with senior developers on production deployments</li>
-                        </ul>
-                        <div class="timeline-tags">
-                            <span class="tech-tag">PHP</span>
-                            <span class="tech-tag">MySQL</span>
-                            <span class="tech-tag">Moodle</span>
-                            <span class="tech-tag">JavaScript</span>
-                            <span class="tech-tag">Git</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Entry 3 -->
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content glass-card">
-                        <span class="timeline-date"><i class="ri-calendar-line"></i> August 2024 – October 2024</span>
-                        <h3 class="timeline-title">Summer Internship — Full Stack Development</h3>
-                        <h4 class="timeline-company"><i class="ri-building-line"></i> Techpile Technology Pvt. Ltd. — Lucknow</h4>
-                        <ul class="timeline-list">
-                            <li>Built LMS and portfolio website as full-stack projects</li>
-                            <li>Worked with .NET MVC framework and MySQL databases</li>
-                            <li>Gained experience in end-to-end web development lifecycle</li>
-                        </ul>
-                        <div class="timeline-tags">
-                            <span class="tech-tag">HTML</span>
-                            <span class="tech-tag">CSS</span>
-                            <span class="tech-tag">Bootstrap</span>
-                            <span class="tech-tag">MySQL</span>
-                            <span class="tech-tag">C#</span>
-                            <span class="tech-tag">.NET MVC</span>
-                            <span class="tech-tag">JavaScript</span>
-                            <span class="tech-tag">jQuery</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== PROJECTS ===== -->
-        <section id="projects" class="section reveal">
-            <h2 class="section-title"><span class="section-number">04.</span> Projects</h2>
-            <div class="projects-grid">
-                <!-- Project 1 -->
-                <article class="project-card glass-card" id="project-moodle">
-                    <div class="project-glow"></div>
-                    <div class="project-header">
-                        <div class="project-icon"><i class="ri-folder-3-line"></i></div>
-                        <div class="project-links">
-                            <a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" class="project-link"><i class="ri-github-line"></i></a>
-                        </div>
-                    </div>
-                    <h3 class="project-title">Moodle LMS Customization Platform</h3>
-                    <ul class="project-description">
-                        <li>Custom Moodle LMS with role-based dashboards, attendance tracking, and reporting</li>
-                        <li>Automated workflows and enrollment pipelines</li>
-                        <li>Custom plugins for student management and enrollment processes</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span class="tech-tag">PHP</span>
-                        <span class="tech-tag">MySQL</span>
-                        <span class="tech-tag">Moodle</span>
-                        <span class="tech-tag">JavaScript</span>
-                        <span class="tech-tag">Bootstrap</span>
-                        <span class="tech-tag">Git</span>
+                <article class="story-card reveal">
+                    <p class="card-label">How I work</p>
+                    <h3>Proof over assumptions</h3>
+                    <p>I trace the real route, data model, and user context before changing code. That discipline keeps fixes precise and systems maintainable.</p>
+                    <div class="mini-diagram" aria-hidden="true">
+                        <span>Observe</span><i>→</i><span>Model</span><i>→</i><span>Build</span><i>→</i><span>Verify</span>
                     </div>
                 </article>
-                <!-- Project 2 -->
-                <article class="project-card glass-card" id="project-dotnet-lms">
-                    <div class="project-glow"></div>
-                    <div class="project-header">
-                        <div class="project-icon"><i class="ri-folder-3-line"></i></div>
-                        <div class="project-links">
-                            <a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" class="project-link"><i class="ri-github-line"></i></a>
-                        </div>
+
+                <article class="story-card reveal">
+                    <p class="card-label">Education</p>
+                    <h3>B.Tech, Computer Science</h3>
+                    <p>SR Institute of Management &amp; Technology, Lucknow</p>
+                    <div class="card-meta"><span>2021—2025</span><span>Foundation to production</span></div>
+                </article>
+            </div>
+
+            <div class="journey reveal" aria-label="Career journey">
+                <div class="journey-line" aria-hidden="true"></div>
+                <div class="journey-step">
+                    <span class="journey-year">2024</span>
+                    <strong>Full-stack foundation</strong>
+                    <p>Built LMS and web projects with .NET MVC, C#, MySQL, and JavaScript.</p>
+                </div>
+                <div class="journey-step">
+                    <span class="journey-year">2026</span>
+                    <strong>Moodle specialization</strong>
+                    <p>Moved from intern to LMS Associate, taking on production platform work.</p>
+                </div>
+                <div class="journey-step current">
+                    <span class="journey-year">Now</span>
+                    <strong>Systems ownership</strong>
+                    <p>Designing role-aware tools, reporting surfaces, and reliable learning workflows.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-tinted" id="skills" aria-labelledby="skills-title">
+            <div class="shell">
+                <div class="section-intro split reveal">
+                    <div>
+                        <p class="section-index">02 / Expertise</p>
+                        <h2 id="skills-title">A practical stack for<br><span>complex web products.</span></h2>
                     </div>
-                    <h3 class="project-title">Learning Management System (.NET)</h3>
-                    <ul class="project-description">
-                        <li>Full-featured LMS with Home, Students, and User sections</li>
-                        <li>Secure login system, enrollment tracking, and user management</li>
-                        <li>Built with .NET MVC architecture and MySQL backend</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span class="tech-tag">.NET MVC</span>
-                        <span class="tech-tag">Bootstrap</span>
-                        <span class="tech-tag">C#</span>
-                        <span class="tech-tag">MySQL</span>
+                    <p>Tools are only useful when they serve the architecture. My stack spans interface craft, backend logic, data, and delivery.</p>
+                </div>
+
+                <div class="skills-grid">
+                    <article class="skill-card reveal">
+                        <div class="skill-icon">01</div><h3>Frontend</h3><p>Interfaces that remain clear under real product complexity.</p>
+                        <ul><li>HTML5</li><li>CSS3</li><li>JavaScript</li><li>jQuery</li><li>Bootstrap</li></ul>
+                    </article>
+                    <article class="skill-card reveal">
+                        <div class="skill-icon">02</div><h3>Backend</h3><p>Business logic, permissions, plugins, and stable integrations.</p>
+                        <ul><li>PHP</li><li>Moodle LMS</li><li>C#</li><li>.NET MVC</li><li>Java</li></ul>
+                    </article>
+                    <article class="skill-card reveal">
+                        <div class="skill-icon">03</div><h3>Database</h3><p>Data models and queries designed around the user workflow.</p>
+                        <ul><li>MySQL</li><li>SQL reporting</li><li>Schema design</li><li>Query optimization</li></ul>
+                    </article>
+                    <article class="skill-card reveal">
+                        <div class="skill-icon">04</div><h3>DevOps</h3><p>Repeatable delivery and disciplined source control.</p>
+                        <ul><li>Git</li><li>GitHub Actions</li><li>SSH deploys</li><li>Linux</li></ul>
+                    </article>
+                    <article class="skill-card reveal">
+                        <div class="skill-icon">05</div><h3>Cloud</h3><p>Practical hosting for fast, dependable web delivery.</p>
+                        <ul><li>AWS EC2</li><li>GitHub Pages</li><li>Web hosting</li><li>DNS</li></ul>
+                    </article>
+                    <article class="skill-card reveal">
+                        <div class="skill-icon">06</div><h3>Tools</h3><p>A focused workflow for investigation, implementation, and QA.</p>
+                        <ul><li>VS Code</li><li>GitHub</li><li>Browser DevTools</li><li>CLI</li></ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section shell" id="experience" aria-labelledby="experience-title">
+            <div class="section-intro split reveal">
+                <div>
+                    <p class="section-index">03 / Experience</p>
+                    <h2 id="experience-title">A career built through<br><span>increasing ownership.</span></h2>
+                </div>
+                <p>Each role has moved me closer to the systems themselves—from learning the full stack to shaping production LMS workflows.</p>
+            </div>
+
+            <div class="experience-list">
+                <article class="experience-item reveal">
+                    <div class="experience-date"><span>2026—Now</span><i class="current-dot"></i></div>
+                    <div class="experience-main">
+                        <div class="experience-heading">
+                            <div><h3>LMS Associate</h3><p>AeroBay · Aviotron Aerospace Pvt Ltd</p></div>
+                            <span>Noida, India</span>
+                        </div>
+                        <ul class="achievement-list">
+                            <li><strong>Platform engineering</strong><span>Developing and maintaining custom Moodle experiences for multiple user roles and operational workflows.</span></li>
+                            <li><strong>Workflow design</strong><span>Building dashboards, attendance systems, reports, user-management tools, and enrollment automation.</span></li>
+                            <li><strong>Full-stack delivery</strong><span>Working across PHP, MySQL, JavaScript, UI implementation, debugging, and production verification.</span></li>
+                        </ul>
+                        <div class="tag-row"><span>Moodle</span><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>Git</span></div>
                     </div>
                 </article>
-                <!-- Project 3 -->
-                <article class="project-card glass-card" id="project-portfolio">
-                    <div class="project-glow"></div>
-                    <div class="project-header">
-                        <div class="project-icon"><i class="ri-folder-3-line"></i></div>
-                        <div class="project-links">
-                            <a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" class="project-link"><i class="ri-github-line"></i></a>
+
+                <article class="experience-item reveal">
+                    <div class="experience-date"><span>Apr—Jun 2026</span></div>
+                    <div class="experience-main">
+                        <div class="experience-heading">
+                            <div><h3>PHP &amp; Moodle Developer Intern</h3><p>AeroBay</p></div>
+                            <span>Noida, India</span>
                         </div>
+                        <ul class="achievement-list">
+                            <li><strong>Production contribution</strong><span>Delivered plugin enhancements, bug fixes, and new Moodle features alongside senior developers.</span></li>
+                            <li><strong>Data performance</strong><span>Worked with MySQL architecture and query optimization for application workflows and reporting.</span></li>
+                        </ul>
+                        <div class="tag-row"><span>PHP</span><span>Moodle</span><span>MySQL</span><span>JavaScript</span></div>
                     </div>
-                    <h3 class="project-title">Interactive Portfolio Website</h3>
-                    <ul class="project-description">
-                        <li>Modern responsive portfolio with particle effects and glassmorphism design</li>
-                        <li>Smooth animations, typewriter effects, and dynamic interactions</li>
-                        <li>Fully responsive across all devices and screen sizes</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span class="tech-tag">HTML5</span>
-                        <span class="tech-tag">CSS3</span>
-                        <span class="tech-tag">JavaScript</span>
+                </article>
+
+                <article class="experience-item reveal">
+                    <div class="experience-date"><span>Aug—Oct 2024</span></div>
+                    <div class="experience-main">
+                        <div class="experience-heading">
+                            <div><h3>Full Stack Development Intern</h3><p>Techpile Technology Pvt Ltd</p></div>
+                            <span>Lucknow, India</span>
+                        </div>
+                        <ul class="achievement-list">
+                            <li><strong>End-to-end foundation</strong><span>Built LMS and portfolio products across interface, application logic, and relational data.</span></li>
+                            <li><strong>Application architecture</strong><span>Applied .NET MVC, C#, MySQL, JavaScript, and jQuery in complete project lifecycles.</span></li>
+                        </ul>
+                        <div class="tag-row"><span>.NET MVC</span><span>C#</span><span>MySQL</span><span>JavaScript</span></div>
                     </div>
                 </article>
             </div>
         </section>
 
-        <!-- ===== EDUCATION ===== -->
-        <section id="education" class="section reveal">
-            <h2 class="section-title"><span class="section-number">05.</span> Education</h2>
-            <div class="education-timeline">
-                <div class="edu-card glass-card">
-                    <div class="edu-icon"><i class="ri-graduation-cap-line"></i></div>
-                    <div class="edu-info">
-                        <h3>B.Tech — Computer Science</h3>
-                        <h4>SR Institute of Management &amp; Technology, Lucknow</h4>
-                        <span class="edu-year"><i class="ri-calendar-line"></i> 2021 – 2025</span>
+        <section class="section projects-section" id="projects" aria-labelledby="projects-title">
+            <div class="shell">
+                <div class="section-intro split reveal">
+                    <div>
+                        <p class="section-index">04 / Selected work</p>
+                        <h2 id="projects-title">Systems shaped around<br><span>real user needs.</span></h2>
                     </div>
+                    <p>Selected work across learning platforms, full-stack application design, and the web. Confidential production details are intentionally abstracted.</p>
                 </div>
-                <div class="edu-card glass-card">
-                    <div class="edu-icon"><i class="ri-book-open-line"></i></div>
-                    <div class="edu-info">
-                        <h3>12th — Science</h3>
-                        <h4>Madan Mohan Malaviya, Bhatpar Rani, Deoria</h4>
-                        <span class="edu-year"><i class="ri-calendar-line"></i> 2018 – 2020</span>
-                    </div>
-                </div>
-                <div class="edu-card glass-card">
-                    <div class="edu-icon"><i class="ri-school-line"></i></div>
-                    <div class="edu-info">
-                        <h3>10th</h3>
-                        <h4>K Y S P B H S S Ghanti, Deoria</h4>
-                        <span class="edu-year"><i class="ri-calendar-line"></i> 2018</span>
-                    </div>
+
+                <div class="projects-list">
+                    <article class="project-card reveal" data-tilt id="project-moodle">
+                        <figure class="project-visual moodle-visual" aria-label="Role-aware Moodle dashboard interface concept">
+                            <div class="mock-browser">
+                                <div class="mock-top"><span></span><span></span><span></span><b>Learning operations</b></div>
+                                <div class="mock-body">
+                                    <aside><div class="mock-logo">A</div><i></i><i></i><i></i><i></i></aside>
+                                    <div class="mock-content">
+                                        <div class="mock-welcome"><span>Good morning, Admin</span><small>Platform overview</small></div>
+                                        <div class="mock-kpis"><i><b>94%</b><small>Attendance</small></i><i><b>1,248</b><small>Learners</small></i><i><b>38</b><small>Courses</small></i></div>
+                                        <div class="mock-chart"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <figcaption>Role-aware operations dashboard</figcaption>
+                        </figure>
+                        <div class="project-copy">
+                            <div class="project-number">01 / Platform system</div>
+                            <h3>Moodle LMS Customization Platform</h3>
+                            <p class="project-summary">A custom learning operations layer for role-based dashboards, attendance, enrollment, and decision-ready reporting.</p>
+                            <div class="case-grid">
+                                <div><span>Problem</span><p>Generic LMS flows created friction across distinct admin, trainer, and learner responsibilities.</p></div>
+                                <div><span>Solution</span><p>Purpose-built workflows and interfaces tied to each role’s actual permissions and tasks.</p></div>
+                                <div><span>Features</span><p>Dashboards, attendance, reports, user scope, enrollment automation, and custom plugins.</p></div>
+                                <div><span>Architecture</span><p>Moodle plugin layer · PHP services · MySQL reporting · modular frontend behaviors.</p></div>
+                            </div>
+                            <div class="project-footer">
+                                <div class="tag-row"><span>PHP</span><span>Moodle</span><span>MySQL</span><span>JavaScript</span></div>
+                                <div class="project-links"><a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer">GitHub profile ↗</a><span title="Client work is confidential">Private case study</span></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card project-reverse reveal" data-tilt id="project-dotnet">
+                        <figure class="project-visual dotnet-visual" aria-label="Learning management application interface concept">
+                            <div class="portal-panel">
+                                <div class="portal-nav"><strong>LMS<span>.</span></strong><i></i><i></i><i></i><em>AS</em></div>
+                                <div class="portal-heading"><small>Student management</small><strong>Learning, organized.</strong></div>
+                                <div class="portal-table">
+                                    <div><i>AM</i><span><b>Arjun Mehta</b><small>Web development</small></span><em>Active</em></div>
+                                    <div><i>SK</i><span><b>Sana Khan</b><small>Database systems</small></span><em>Active</em></div>
+                                    <div><i>RV</i><span><b>Rohan Verma</b><small>Application design</small></span><em>Review</em></div>
+                                </div>
+                                <div class="portal-stat"><small>Course completion</small><strong>78.4%</strong><span><i></i></span></div>
+                            </div>
+                            <figcaption>Academic management portal</figcaption>
+                        </figure>
+                        <div class="project-copy">
+                            <div class="project-number">02 / Full-stack application</div>
+                            <h3>Learning Management System</h3>
+                            <p class="project-summary">A structured academic portal connecting secure access, student records, course flows, and administrative visibility.</p>
+                            <div class="case-grid">
+                                <div><span>Problem</span><p>Student information and learning activity needed one coherent management surface.</p></div>
+                                <div><span>Solution</span><p>A modular web application with authenticated, task-focused areas for users and administrators.</p></div>
+                                <div><span>Features</span><p>Secure login, learner profiles, enrollment tracking, grade flows, and user management.</p></div>
+                                <div><span>Architecture</span><p>.NET MVC · C# application layer · MySQL persistence · Bootstrap and jQuery UI.</p></div>
+                            </div>
+                            <div class="project-footer">
+                                <div class="tag-row"><span>.NET MVC</span><span>C#</span><span>MySQL</span><span>jQuery</span></div>
+                                <div class="project-links"><a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer">GitHub profile ↗</a><span>Archive project</span></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card reveal" data-tilt id="project-portfolio">
+                        <figure class="project-visual portfolio-visual" aria-label="Premium developer portfolio interface preview">
+                            <div class="portfolio-window">
+                                <div class="portfolio-mini-nav"><b>AS</b><span>About&nbsp;&nbsp; Work&nbsp;&nbsp; Contact</span></div>
+                                <div class="portfolio-mini-hero"><small>ENGINEER / DEVELOPER</small><strong>Software with<br><i>clarity.</i></strong><p>Built for the details that matter.</p></div>
+                                <div class="portfolio-mini-card"><span>Selected work</span><b>03</b></div>
+                            </div>
+                            <figcaption>Performance-first personal platform</figcaption>
+                        </figure>
+                        <div class="project-copy">
+                            <div class="project-number">03 / Web experience</div>
+                            <h3>Developer Portfolio</h3>
+                            <p class="project-summary">A fast, framework-free portfolio designed to make technical depth feel direct, calm, and unmistakably professional.</p>
+                            <div class="case-grid">
+                                <div><span>Problem</span><p>Traditional portfolios often bury the engineer beneath effects, generic cards, and unstructured content.</p></div>
+                                <div><span>Solution</span><p>An editorial system where hierarchy, project evidence, and intentional motion lead the experience.</p></div>
+                                <div><span>Features</span><p>Responsive design, scroll spy, motion preferences, accessible navigation, and async contact.</p></div>
+                                <div><span>Architecture</span><p>Semantic HTML · modular CSS · dependency-free JavaScript · GitHub Pages delivery.</p></div>
+                            </div>
+                            <div class="project-footer">
+                                <div class="tag-row"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>GitHub Pages</span></div>
+                                <div class="project-links"><a href="https://github.com/angad64553/portfolio-website" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://angad07.com/" target="_blank" rel="noopener noreferrer">Live demo ↗</a><span>Case study shown</span></div>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <!-- ===== CONTACT ===== -->
-        <section id="contact" class="section reveal">
-            <h2 class="section-title"><span class="section-number">06.</span> Get In Touch</h2>
-            <div class="contact-wrapper">
-                <!-- Left — Info -->
-                <div class="contact-info">
-                    <h3>Let's Build Something Together</h3>
-                    <p>I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision. Feel free to reach out!</p>
-                    <div class="contact-cards">
-                        <a href="mailto:angad64553@gmail.com" class="contact-card glass-card" id="contact-email">
-                            <i class="ri-mail-line"></i>
-                            <div>
-                                <span class="contact-card-label">Email</span>
-                                <span class="contact-card-value">angad64553@gmail.com</span>
-                            </div>
-                        </a>
-                        <a href="tel:+917052478516" class="contact-card glass-card" id="contact-phone">
-                            <i class="ri-phone-line"></i>
-                            <div>
-                                <span class="contact-card-label">Phone</span>
-                                <span class="contact-card-value">+91 7052478516</span>
-                            </div>
-                        </a>
-                        <a href="https://wa.me/917052478516" target="_blank" rel="noopener noreferrer" class="contact-card glass-card" id="contact-whatsapp">
-                            <i class="ri-whatsapp-line"></i>
-                            <div>
-                                <span class="contact-card-label">WhatsApp</span>
-                                <span class="contact-card-value">+91 7052478516</span>
-                            </div>
-                        </a>
-                        <div class="contact-card glass-card" id="contact-location">
-                            <i class="ri-map-pin-line"></i>
-                            <div>
-                                <span class="contact-card-label">Location</span>
-                                <span class="contact-card-value">Noida, Uttar Pradesh, India</span>
-                            </div>
-                        </div>
-                        <a href="https://www.linkedin.com/in/angad-sharma-64553-" target="_blank" rel="noopener noreferrer" class="contact-card glass-card" id="contact-linkedin">
-                            <i class="ri-linkedin-box-line"></i>
-                            <div>
-                                <span class="contact-card-label">LinkedIn</span>
-                                <span class="contact-card-value">angad-sharma-64553-</span>
-                            </div>
-                        </a>
-                        <a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer" class="contact-card glass-card" id="contact-github-card">
-                            <i class="ri-github-line"></i>
-                            <div>
-                                <span class="contact-card-label">GitHub</span>
-                                <span class="contact-card-value">github.com/angad64553</span>
-                            </div>
-                        </a>
+        <section class="section shell credentials" aria-labelledby="credentials-title">
+            <div class="section-intro reveal">
+                <p class="section-index">05 / Credentials</p>
+                <h2 id="credentials-title">Always learning.<br><span>Always applying.</span></h2>
+            </div>
+            <div class="credentials-grid">
+                <article class="credential reveal"><span>01</span><div><p>Web Development</p><h3>OCTANET</h3></div><small>Certification</small></article>
+                <article class="credential reveal"><span>02</span><div><p>Data Science Foundations</p><h3>IBM</h3></div><small>Certification</small></article>
+                <article class="credential reveal"><span>03</span><div><p>Web Development</p><h3>CODTECH</h3></div><small>Certification</small></article>
+            </div>
+        </section>
+
+        <section class="section contact-section" id="contact" aria-labelledby="contact-title">
+            <div class="shell contact-shell">
+                <div class="contact-copy reveal">
+                    <p class="section-index">06 / Contact</p>
+                    <h2 id="contact-title">Let’s build something<br><span>useful together.</span></h2>
+                    <p>Have a role, platform challenge, or product idea where thoughtful engineering matters? Tell me what you’re working on.</p>
+                    <div class="contact-details">
+                        <a href="mailto:angad64553@gmail.com"><span>Email</span><strong>angad64553@gmail.com</strong></a>
+                        <a href="tel:+917052478516"><span>Phone</span><strong>+91 70524 78516</strong></a>
+                        <div><span>Based in</span><strong>Noida, Uttar Pradesh</strong></div>
                     </div>
                 </div>
-                <!-- Right — Form -->
-                <div class="contact-form-wrapper">
-                    <form action="https://api.web3forms.com/submit" method="POST" id="feedback-form" class="contact-form glass-card">
-                        <input type="hidden" name="access_key" value="3fcfdc96-8a6f-4fb6-882e-8a579b7f0fc6">
-                        <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display: none;">
-                        <div class="form-group">
-                            <label for="form-name">Name</label>
-                            <input type="text" name="name" id="form-name" placeholder="Your Name" required>
+
+                <form action="https://api.web3forms.com/submit" method="post" id="feedback-form" class="contact-form reveal" novalidate>
+                    <input type="hidden" name="access_key" value="3fcfdc96-8a6f-4fb6-882e-8a579b7f0fc6">
+                    <input type="hidden" name="subject" value="New portfolio enquiry">
+                    <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" class="botcheck">
+
+                    <div class="form-row">
+                        <div class="field">
+                            <input type="text" name="name" id="form-name" placeholder=" " autocomplete="name" required>
+                            <label for="form-name">Your name</label>
+                            <span class="field-line"></span>
+                            <small class="field-error">Please enter your name.</small>
                         </div>
-                        <div class="form-group">
-                            <label for="form-email">Email</label>
-                            <input type="email" name="email" id="form-email" placeholder="your@email.com" required>
+                        <div class="field">
+                            <input type="email" name="email" id="form-email" placeholder=" " autocomplete="email" required>
+                            <label for="form-email">Email address</label>
+                            <span class="field-line"></span>
+                            <small class="field-error">Enter a valid email address.</small>
                         </div>
-                        <div class="form-group">
-                            <label for="form-subject">Subject</label>
-                            <input type="text" name="subject" id="form-subject" placeholder="Subject">
-                        </div>
-                        <div class="form-group">
-                            <label for="form-message">Message</label>
-                            <textarea name="message" id="form-message" rows="5" placeholder="Your message..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-submit" id="form-submit">
-                            <i class="ri-send-plane-line"></i> Send Message
+                    </div>
+                    <div class="field">
+                        <input type="text" name="project" id="form-project" placeholder=" ">
+                        <label for="form-project">What are you working on? <em>Optional</em></label>
+                        <span class="field-line"></span>
+                    </div>
+                    <div class="field field-message">
+                        <textarea name="message" id="form-message" rows="5" placeholder=" " required></textarea>
+                        <label for="form-message">Tell me about the project, role, or challenge</label>
+                        <span class="field-line"></span>
+                        <small class="field-error">Please add a short message.</small>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="button button-primary magnetic">
+                            <span class="button-label">Send message</span><span class="button-icon" aria-hidden="true">↗</span>
                         </button>
                         <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </section>
-
     </main>
 
-    <!-- ===== FOOTER ===== -->
-    <footer id="footer">
-        <p>Designed &amp; Built by <strong>Angad Sharma</strong></p>
-        <p>&copy; 2025 All Rights Reserved.</p>
+    <footer class="site-footer">
+        <div class="shell footer-inner">
+            <a class="brand" href="#home" aria-label="Back to home"><span class="brand-mark">AS</span></a>
+            <p>Designed and engineered by Angad Sharma.<br><span>Built with HTML, CSS, and JavaScript.</span></p>
+            <nav aria-label="Social links">
+                <a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a href="https://www.linkedin.com/in/angad-sharma-64553-" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+                <a href="mailto:angad64553@gmail.com">Email ↗</a>
+                <a href="resume.html" target="_blank" rel="noopener">Résumé ↗</a>
+            </nav>
+            <a class="back-top magnetic" href="#home">Back to top <span aria-hidden="true">↑</span></a>
+        </div>
     </footer>
 
-    <!-- ===== SIDE ELEMENTS ===== -->
-    <div class="side-email">
-        <a href="mailto:angad64553@gmail.com">angad64553@gmail.com</a>
-        <div class="side-line"></div>
-    </div>
-
-    <div class="side-socials">
-        <a href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="ri-github-line"></i></a>
-        <a href="https://www.linkedin.com/in/angad-sharma-64553-" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="ri-linkedin-box-line"></i></a>
-        <a href="https://wa.me/917052478516" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="ri-whatsapp-line"></i></a>
-        <div class="side-line"></div>
-    </div>
-
-    <!-- ===== BACK TO TOP ===== -->
-    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
-        <i class="ri-arrow-up-s-line"></i>
-    </button>
-
-    <script src="script.js"></script>
+    <div class="cursor" aria-hidden="true"><span></span></div>
+    <script src="script.js" defer></script>
 </body>
 </html>

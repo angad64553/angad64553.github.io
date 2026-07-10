@@ -1,41 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You | Angad Sharma</title>
-    <meta name="description" content="Thank you for contacting Angad Sharma.">
-    <meta name="theme-color" content="#050510">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0a0a0b">
+    <title>Message received — Angad Sharma</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    
-    <!-- ===== FONTS & ICONS ===== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
+    <style>
+        .thanks { min-height: 100svh; display: grid; place-items: center; padding: 24px; }
+        .thanks-card { width: min(620px, 100%); padding: clamp(38px, 7vw, 74px); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); text-align: center; }
+        .thanks-mark { display: grid; width: 54px; height: 54px; place-items: center; margin: 0 auto 32px; border: 1px solid rgba(118,215,155,.3); border-radius: 50%; color: var(--success); font-size: 1.2rem; }
+        .thanks-card .section-index { margin: 0; }.thanks-card h1 { margin: 18px 0; font-size: clamp(2.8rem, 9vw, 5rem); font-weight: 500; letter-spacing: -.07em; line-height: 1; }
+        .thanks-card > p:not(.section-index) { max-width: 410px; margin: 0 auto 34px; color: var(--text-soft); }
+    </style>
 </head>
-<body class="thankyou-page">
-    <canvas id="particles"></canvas>
-
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
-    <main class="thankyou-main">
-        <section class="thankyou-card glass-card">
-            <div class="thankyou-icon" aria-hidden="true">&lt;/&gt;</div>
-            <p class="hero-greeting">Message delivered</p>
-            <h1 class="thankyou-title"><span class="gradient-text">Thank You!</span></h1>
-            <p class="thankyou-message">Your message has been sent successfully.</p>
-            <p class="thankyou-submessage">I will get back to you soon.</p>
-            <a href="https://angad64553.github.io/portfolio-website/" class="btn btn-primary thankyou-btn">
-                Back to Portfolio
-            </a>
+<body>
+    <main class="thanks">
+        <section class="thanks-card">
+            <div class="thanks-mark" aria-hidden="true">✓</div>
+            <p class="section-index">Message received</p>
+            <h1>Thank you.</h1>
+            <p>Your note made it through. I’ll read it carefully and get back to you as soon as I can.</p>
+            <a class="button button-primary" href="index.html">Back to portfolio <span aria-hidden="true">↗</span></a>
         </section>
     </main>
-
-    <script src="script.js"></script>
 </body>
 </html>
