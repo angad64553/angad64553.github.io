@@ -14,12 +14,15 @@
     <meta property="og:url" content="https://angad07.com/">
     <meta property="og:title" content="Angad Sharma — LMS &amp; PHP Developer">
     <meta property="og:description" content="Engineering focused learning platforms, custom Moodle workflows, and dependable web products.">
-    <meta property="og:image" content="https://angad07.com/og-image.svg">
+    <meta property="og:image" content="https://angad07.com/og-image-generated.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Angad Sharma, LMS and PHP Developer">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Angad Sharma — LMS &amp; PHP Developer">
     <meta name="twitter:description" content="Engineering focused learning platforms, custom Moodle workflows, and dependable web products.">
-    <meta name="twitter:image" content="https://angad07.com/og-image.svg">
+    <meta name="twitter:image" content="https://angad07.com/og-image-generated.png">
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
@@ -52,6 +55,13 @@
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="page-noise" aria-hidden="true"></div>
     <div class="scroll-progress" aria-hidden="true"><span></span></div>
+    <div class="ambient-scene" aria-hidden="true">
+        <div class="ambient-grid"></div>
+        <div class="aurora aurora-one"></div>
+        <div class="aurora aurora-two"></div>
+        <div class="ambient-stars" id="ambient-stars"></div>
+        <div class="cursor-light"></div>
+    </div>
 
     <header class="site-header" id="site-header">
         <nav class="nav shell" aria-label="Main navigation">
@@ -65,6 +75,7 @@
                 <a class="nav-link" href="#skills">Expertise</a>
                 <a class="nav-link" href="#experience">Experience</a>
                 <a class="nav-link" href="#projects">Work</a>
+                <a class="nav-link" href="#github">GitHub</a>
                 <a class="nav-link" href="#contact">Contact</a>
             </div>
 
@@ -392,9 +403,72 @@
             </div>
         </section>
 
+        <section class="section github-section" id="github" aria-labelledby="github-title" data-github-user="angad64553" data-github-repo="angad64553.github.io">
+            <div class="shell">
+                <div class="section-intro split reveal">
+                    <div>
+                        <p class="section-index">05 / GitHub activity</p>
+                        <h2 id="github-title">Built in public.<br><span>Updated live.</span></h2>
+                    </div>
+                    <p>Live engineering activity, open-source work, and repository signals from GitHub.</p>
+                </div>
+
+                <div class="github-dashboard reveal" aria-busy="true">
+                    <div class="github-dashboard-head">
+                        <div class="github-identity">
+                            <span class="github-avatar-shell"><img id="github-avatar" alt="" width="48" height="48" loading="lazy"></span>
+                            <div><span class="live-label"><i></i>Live from GitHub</span><strong id="github-name">Loading profile…</strong><small id="github-handle">@angad64553</small></div>
+                        </div>
+                        <a class="button button-secondary magnetic" id="github-profile-link" href="https://github.com/angad64553" target="_blank" rel="noopener noreferrer">View GitHub profile <span aria-hidden="true">↗</span></a>
+                    </div>
+
+                    <div class="github-stats" aria-label="GitHub statistics">
+                        <article class="github-stat"><span>Current streak</span><strong id="github-streak">—</strong><small>contribution days</small></article>
+                        <article class="github-stat"><span>Public repositories</span><strong id="github-repos">—</strong><small>available now</small></article>
+                        <article class="github-stat"><span>Total stars</span><strong id="github-stars">—</strong><small>across repositories</small></article>
+                        <article class="github-stat"><span>Total commits</span><strong id="github-commits">—</strong><small>public history</small></article>
+                    </div>
+
+                    <div class="github-main-grid">
+                        <article class="contribution-panel">
+                            <div class="panel-heading"><div><span>Contribution calendar</span><strong id="contribution-total">Loading activity…</strong></div><small id="contribution-range">Past year</small></div>
+                            <div class="calendar-scroll" tabindex="0" aria-label="GitHub contribution calendar. Scroll horizontally to explore.">
+                                <div class="calendar-chart">
+                                    <div class="calendar-months" id="calendar-months" aria-hidden="true"></div>
+                                    <div class="calendar-body">
+                                        <div class="calendar-weekdays" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+                                        <div class="contribution-calendar" id="contribution-calendar" role="img" aria-label="Loading GitHub contribution calendar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="calendar-legend" aria-label="Contribution intensity from less activity to more activity"><span>Less activity</span><span class="legend-scale" aria-hidden="true"><i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i></span><span>More activity</span></div>
+                        </article>
+
+                        <article class="latest-commit-panel">
+                            <div class="panel-heading"><span>Latest commit</span><span class="commit-pulse" aria-hidden="true"></span></div>
+                            <div id="latest-commit-card" class="latest-commit" aria-label="Latest public portfolio commit summary. This card is not a link.">
+                                <span class="commit-repo" id="latest-commit-repo">Finding latest activity…</span>
+                                <strong id="latest-commit-message">Loading commit</strong>
+                                <small id="latest-commit-time">—</small>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="top-repositories">
+                        <div class="panel-heading"><span>Featured repositories</span><small>Selected public and private work</small></div>
+                        <div class="repo-list" id="github-repo-list" aria-live="polite">
+                            <div class="repo-skeleton"></div><div class="repo-skeleton"></div><div class="repo-skeleton"></div>
+                        </div>
+                    </div>
+
+                    <p class="github-status" id="github-status" role="status" aria-live="polite">Connecting to GitHub…</p>
+                </div>
+            </div>
+        </section>
+
         <section class="section shell credentials" aria-labelledby="credentials-title">
             <div class="section-intro reveal">
-                <p class="section-index">05 / Credentials</p>
+                <p class="section-index">06 / Credentials</p>
                 <h2 id="credentials-title">Always learning.<br><span>Always applying.</span></h2>
             </div>
             <div class="credentials-grid">
@@ -407,7 +481,7 @@
         <section class="section contact-section" id="contact" aria-labelledby="contact-title">
             <div class="shell contact-shell">
                 <div class="contact-copy reveal">
-                    <p class="section-index">06 / Contact</p>
+                    <p class="section-index">07 / Contact</p>
                     <h2 id="contact-title">Let’s build something<br><span>useful together.</span></h2>
                     <p>Have a role, platform challenge, or product idea where thoughtful engineering matters? Tell me what you’re working on.</p>
                     <div class="contact-details">
@@ -473,7 +547,8 @@
         </div>
     </footer>
 
-    <div class="cursor" aria-hidden="true"><span></span></div>
+    <div class="cursor" aria-hidden="true"><span></span><i></i></div>
+    <div class="contribution-tooltip" id="contribution-tooltip" role="tooltip" aria-hidden="true"></div>
     <script src="script.js" defer></script>
 </body>
 </html>

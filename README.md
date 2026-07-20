@@ -20,7 +20,9 @@ A premium, framework-free portfolio for an LMS Associate and PHP developer. The 
 - Editorial dark visual system with a restrained accent palette
 - Product-style project mockups built entirely in HTML and CSS
 - Sticky blurred navigation, mobile menu, and section scroll spy
-- Progressive section reveals, magnetic actions, and subtle card tilt
+- Layered ambient lighting, animated grid, subtle stars, grain, and cursor spotlight
+- Progressive blur reveals, magnetic actions, ripples, surface glow, and subtle card tilt
+- Live GitHub profile, commit, repository, star, streak, and contribution data
 - Accessible keyboard focus, semantic landmarks, and reduced-motion support
 - Floating-label contact form with inline validation and async status feedback
 - Printable résumé page
