@@ -231,11 +231,25 @@
         const calendar = document.getElementById('contribution-calendar');
         const calendarMonths = document.getElementById('calendar-months');
         const calendarTooltip = document.getElementById('contribution-tooltip');
-        const numberFormat = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
-        const dateFormat = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric' });
+        const numberFormat = new Intl.NumberFormat('en-US');
+        const fullDateFormat = new Intl.DateTimeFormat('en', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+        const exactDateFormat = new Intl.DateTimeFormat('en', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
         const monthFormat = new Intl.DateTimeFormat('en', { month: 'short' });
         const relativeFormat = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
         const apiHeaders = { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+        const currentYear = new Date().getFullYear();
+        const refreshInterval = 7 * 60 * 1000;
+        const cacheMaxAge = 5 * 60 * 1000;
+        const cacheFallbackAge = 24 * 60 * 60 * 1000;
+        const cachePrefix = `github-activity:v2:${username}:`;
         let lastActivityRefresh = 0;
         let activityRefreshing = false;
 
@@ -244,32 +258,76 @@
             if (element) element.textContent = value;
         };
 
-        const fetchJSON = async (url, options = {}) => {
+        const readCache = (url) => {
+            try {
+                const cached = JSON.parse(window.localStorage.getItem(`${cachePrefix}${url}`));
+                return cached?.savedAt && cached?.data ? cached : null;
+            } catch (error) {
+                return null;
+            }
+        };
+
+        const writeCache = (url, data, etag = '') => {
+            try {
+                window.localStorage.setItem(`${cachePrefix}${url}`, JSON.stringify({
+                    savedAt: Date.now(),
+                    etag,
+                    data
+                }));
+            } catch (error) {
+                /* Live data still works when storage is unavailable. */
+            }
+        };
+
+        const fetchJSON = async (url, options = {}, forceRefresh = false) => {
+            const cached = readCache(url);
+            if (!forceRefresh && cached && Date.now() - cached.savedAt < cacheMaxAge) return cached.data;
             const controller = new AbortController();
             const timeout = window.setTimeout(() => controller.abort(), 10000);
             try {
-                const response = await fetch(url, { cache: 'no-store', ...options, signal: controller.signal });
+                const headers = new Headers(options.headers || {});
+                if (cached?.etag) headers.set('If-None-Match', cached.etag);
+                const response = await fetch(url, { ...options, headers, cache: 'no-cache', signal: controller.signal });
+                if (response.status === 304 && cached) {
+                    writeCache(url, cached.data, cached.etag);
+                    return cached.data;
+                }
                 if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-                return await response.json();
+                const data = await response.json();
+                writeCache(url, data, response.headers.get('etag') || '');
+                return data;
+            } catch (error) {
+                if (cached && Date.now() - cached.savedAt < cacheFallbackAge) return cached.data;
+                throw error;
             } finally {
                 window.clearTimeout(timeout);
             }
         };
 
         const relativeTime = (dateValue) => {
-            const seconds = Math.round((new Date(dateValue).getTime() - Date.now()) / 1000);
-            const ranges = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+            const commitDate = new Date(dateValue);
+            const now = new Date();
+            const seconds = Math.round((commitDate.getTime() - now.getTime()) / 1000);
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfCommitDay = new Date(commitDate.getFullYear(), commitDate.getMonth(), commitDate.getDate());
+            const dayDifference = Math.round((startOfCommitDay.getTime() - startOfToday.getTime()) / 86400000);
+            if (Math.abs(seconds) < 60) return 'Just now';
+            if (Math.abs(seconds) < 3600) return relativeFormat.format(Math.round(seconds / 60), 'minute');
+            if (dayDifference === 0) return 'Today';
+            if (dayDifference === -1) return 'Yesterday';
+            const ranges = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400]];
             const match = ranges.find(([, size]) => Math.abs(seconds) >= size);
-            if (!match) return 'just now';
+            if (!match) return relativeFormat.format(Math.round(seconds / 3600), 'hour');
             return relativeFormat.format(Math.round(seconds / match[1]), match[0]);
         };
 
         const calculateStreak = (days) => {
             if (!days.length) return 0;
-            let index = days.length - 1;
             const now = new Date();
             const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            if (days[index]?.date === today && days[index]?.count === 0) index -= 1;
+            let index = days.findIndex((day) => day.date === today);
+            if (index < 0) index = days.length - 1;
+            if (days[index]?.count === 0) index -= 1;
             let streak = 0;
             while (index >= 0 && days[index].count > 0) {
                 streak += 1;
@@ -279,16 +337,27 @@
         };
 
         const renderCalendar = (data) => {
-            const days = Array.isArray(data?.contributions) ? data.contributions : [];
-            if (!calendar || !calendarMonths || !days.length) throw new Error('Contribution data unavailable');
+            const sourceDays = Array.isArray(data?.contributions) ? data.contributions : [];
+            if (!calendar || !calendarMonths || !sourceDays.length) throw new Error('Contribution data unavailable');
+            const sourceByDate = new Map(sourceDays.map((day) => [day.date, day]));
+            const yearStart = new Date(currentYear, 0, 1, 12);
+            const yearEnd = new Date(currentYear, 11, 31, 12);
+            const days = [];
+            for (const cursor = new Date(yearStart); cursor <= yearEnd; cursor.setDate(cursor.getDate() + 1)) {
+                const date = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
+                const sourceDay = sourceByDate.get(date);
+                days.push({
+                    date,
+                    count: Number(sourceDay?.count || 0),
+                    level: Math.min(Number(sourceDay?.level) || 0, 4)
+                });
+            }
             const dayFragment = document.createDocumentFragment();
             const monthFragment = document.createDocumentFragment();
-            const firstDate = new Date(`${days[0].date}T12:00:00`);
-            const leadingDays = firstDate.getDay();
+            const leadingDays = yearStart.getDay();
             const weekCount = Math.ceil((leadingDays + days.length) / 7);
             const now = new Date();
             const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            const seenMonths = new Set();
 
             calendar.closest('.calendar-chart')?.style.setProperty('--week-count', String(weekCount));
 
@@ -305,7 +374,7 @@
 
             const showTooltip = (event, day) => {
                 if (!calendarTooltip) return;
-                calendarTooltip.textContent = `${dateFormat.format(new Date(`${day.date}T12:00:00`))} · ${day.count} contribution${day.count === 1 ? '' : 's'}`;
+                calendarTooltip.textContent = `${fullDateFormat.format(new Date(`${day.date}T12:00:00`))} · ${numberFormat.format(day.count)} contribution${day.count === 1 ? '' : 's'}`;
                 calendarTooltip.classList.add('visible');
                 calendarTooltip.setAttribute('aria-hidden', 'false');
                 const tooltipRect = calendarTooltip.getBoundingClientRect();
@@ -316,22 +385,24 @@
                 calendarTooltip.style.transform = `translate3d(${Math.max(8, left)}px,${top}px,0)`;
             };
 
-            days.forEach((day, dayIndex) => {
+            for (let month = 0; month < 12; month += 1) {
+                const firstOfMonth = new Date(currentYear, month, 1, 12);
+                const dayOfYear = Math.round((firstOfMonth.getTime() - yearStart.getTime()) / 86400000);
+                const label = document.createElement('span');
+                label.textContent = monthFormat.format(firstOfMonth);
+                label.style.gridColumnStart = String(Math.floor((leadingDays + dayOfYear) / 7) + 1);
+                monthFragment.appendChild(label);
+            }
+
+            days.forEach((day) => {
                 const dayDate = new Date(`${day.date}T12:00:00`);
-                const monthKey = `${dayDate.getFullYear()}-${dayDate.getMonth()}`;
-                if (!seenMonths.has(monthKey)) {
-                    const label = document.createElement('span');
-                    label.textContent = monthFormat.format(dayDate);
-                    label.style.gridColumnStart = String(Math.floor((leadingDays + dayIndex) / 7) + 1);
-                    monthFragment.appendChild(label);
-                    seenMonths.add(monthKey);
-                }
                 const cell = document.createElement('span');
                 cell.className = 'contribution-day';
-                cell.dataset.level = String(Math.min(Number(day.level) || 0, 4));
+                cell.dataset.level = String(day.level);
                 cell.dataset.date = day.date;
-                cell.title = `${dateFormat.format(dayDate)}: ${day.count} contribution${day.count === 1 ? '' : 's'}`;
+                cell.title = `${fullDateFormat.format(dayDate)}: ${numberFormat.format(day.count)} contribution${day.count === 1 ? '' : 's'}`;
                 if (day.date === today) cell.classList.add('is-today');
+                if (day.date > today) cell.classList.add('is-future');
                 cell.addEventListener('pointerenter', (event) => showTooltip(event, day));
                 cell.addEventListener('pointermove', (event) => showTooltip(event, day));
                 cell.addEventListener('pointerleave', hideTooltip);
@@ -349,16 +420,18 @@
                 calendarScroll.addEventListener('scroll', hideTooltip, { passive: true });
                 calendarScroll.dataset.tooltipBound = 'true';
             }
-            const total = Number(Object.values(data.total || {})[0]) || days.reduce((sum, day) => sum + Number(day.count || 0), 0);
-            calendar.setAttribute('aria-label', `${total} GitHub contributions in the past year`);
+            const reportedTotal = Number(data?.total?.[currentYear]);
+            const total = Number.isFinite(reportedTotal) ? reportedTotal : days.reduce((sum, day) => sum + day.count, 0);
+            calendar.setAttribute('aria-label', `${numberFormat.format(total)} GitHub contributions in ${currentYear}`);
             setText('contribution-total', `${numberFormat.format(total)} contributions`);
-            setText('contribution-range', `${dateFormat.format(new Date(`${days[0].date}T12:00:00`))} — ${dateFormat.format(new Date(`${days.at(-1).date}T12:00:00`))}`);
+            setText('contribution-range', `Jan — Dec ${currentYear}`);
             setText('github-streak', numberFormat.format(calculateStreak(days)));
         };
 
         const renderRepositories = (repos) => {
             const repoList = document.getElementById('github-repo-list');
             if (!repoList || !Array.isArray(repos)) return;
+            setText('github-stars', numberFormat.format(repos.reduce((sum, repo) => sum + Number(repo.stargazers_count || 0), 0)));
             const projectSpecs = [
                 {
                     title: 'Jarvis',
@@ -382,10 +455,8 @@
                 }
             ];
             const fragment = document.createDocumentFragment();
-            let selectedStars = 0;
             projectSpecs.forEach((project) => {
                 const repo = project.privateProject ? null : repos.find((item) => project.names.some((name) => item.name.toLowerCase() === name.toLowerCase()));
-                if (repo) selectedStars += Number(repo.stargazers_count || 0);
                 const card = document.createElement(repo ? 'a' : 'article');
                 card.className = `repo-card${repo ? '' : ' repo-card-static'}`;
                 if (repo) {
@@ -434,7 +505,6 @@
                 fragment.appendChild(card);
             });
             repoList.replaceChildren(fragment);
-            setText('github-stars', numberFormat.format(selectedStars));
         };
 
         const renderLatestCommit = (commitData) => {
@@ -442,12 +512,27 @@
             const message = commit?.commit?.message?.split('\n')[0];
             const time = commit?.commit?.committer?.date || commit?.commit?.author?.date;
             if (!message) return;
-            setText('latest-commit-repo', `Portfolio Website · ${username}/${repository}`);
+            const canonicalRepository = commit?.html_url?.match(/^https:\/\/github\.com\/[^/]+\/([^/]+)\/commit\//)?.[1] || repository;
+            setText('latest-commit-repo', canonicalRepository);
             setText('latest-commit-message', message);
-            setText('latest-commit-time', time ? `${relativeTime(time)} · ${dateFormat.format(new Date(time))}` : 'Recent public activity');
+            const timeElement = document.getElementById('latest-commit-time');
+            const commitCard = document.getElementById('latest-commit-card');
+            if (timeElement && time) {
+                const exactDate = exactDateFormat.format(new Date(time));
+                timeElement.textContent = relativeTime(time);
+                timeElement.title = exactDate;
+                timeElement.setAttribute('aria-label', `${relativeTime(time)}. ${exactDate}`);
+                if (commitCard) commitCard.title = exactDate;
+            } else if (timeElement) {
+                timeElement.textContent = 'Recent public activity';
+                timeElement.removeAttribute('title');
+                commitCard?.removeAttribute('title');
+            }
         };
 
-        const loadGithub = async (quiet = false) => {
+        const loadGithub = async (quiet = false, forceRefresh = false) => {
+            if (activityRefreshing) return;
+            activityRefreshing = true;
             if (!quiet) {
                 dashboard?.setAttribute('aria-busy', 'true');
                 if (status) {
@@ -457,12 +542,17 @@
             }
             const encodedUser = encodeURIComponent(username);
             const encodedRepo = encodeURIComponent(repository);
+            const profileUrl = `https://api.github.com/users/${encodedUser}`;
+            const reposUrl = `https://api.github.com/users/${encodedUser}/repos?per_page=100&sort=updated`;
+            const commitCountUrl = `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${username}`)}&per_page=1`;
+            const latestCommitUrl = `https://api.github.com/repos/${encodedUser}/${encodedRepo}/commits?per_page=1`;
+            const contributionsUrl = `https://github-contributions-api.jogruber.de/v4/${encodedUser}?y=${currentYear}`;
             const requests = await Promise.allSettled([
-                fetchJSON(`https://api.github.com/users/${encodedUser}`, { headers: apiHeaders }),
-                fetchJSON(`https://api.github.com/users/${encodedUser}/repos?per_page=100&sort=updated`, { headers: apiHeaders }),
-                fetchJSON(`https://api.github.com/search/commits?q=author:${encodedUser}&per_page=1`, { headers: apiHeaders }),
-                fetchJSON(`https://api.github.com/repos/${encodedUser}/${encodedRepo}/commits?sha=main&per_page=1`, { headers: apiHeaders }),
-                fetchJSON(`https://github-contributions-api.jogruber.de/v4/${encodedUser}?y=last`)
+                fetchJSON(profileUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(reposUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(commitCountUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(latestCommitUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(contributionsUrl, {}, forceRefresh)
             ]);
             const values = requests.map((result) => result.status === 'fulfilled' ? result.value : null);
             const [profile, repos, commitSearch, latestCommit, contributions] = values;
@@ -479,10 +569,10 @@
                 const profileLink = document.getElementById('github-profile-link');
                 if (profileLink) profileLink.href = profile.html_url;
             }
-            renderRepositories(repos || []);
-            if (commitSearch) setText('github-commits', numberFormat.format(commitSearch.total_count));
+            if (repos) renderRepositories(repos);
+            if (commitSearch && !commitSearch.incomplete_results) setText('github-commits', numberFormat.format(commitSearch.total_count));
             if (latestCommit) renderLatestCommit(latestCommit);
-            else {
+            else if (!quiet) {
                 setText('latest-commit-repo', 'Portfolio Website');
                 setText('latest-commit-message', 'Latest commit temporarily unavailable');
                 setText('latest-commit-time', 'GitHub API will retry automatically');
@@ -498,29 +588,13 @@
             }
             dashboard?.setAttribute('aria-busy', 'false');
             lastActivityRefresh = Date.now();
-        };
-
-        const refreshLiveActivity = async () => {
-            if (activityRefreshing) return;
-            activityRefreshing = true;
-            const encodedUser = encodeURIComponent(username);
-            const encodedRepo = encodeURIComponent(repository);
-            const results = await Promise.allSettled([
-                fetchJSON(`https://api.github.com/repos/${encodedUser}/${encodedRepo}/commits?sha=main&per_page=1`, { headers: apiHeaders }),
-                fetchJSON(`https://github-contributions-api.jogruber.de/v4/${encodedUser}?y=last`)
-            ]);
-            if (results[0].status === 'fulfilled') renderLatestCommit(results[0].value);
-            if (results[1].status === 'fulfilled') {
-                try { renderCalendar(results[1].value); } catch (error) { /* preserve current calendar */ }
-            }
-            lastActivityRefresh = Date.now();
             activityRefreshing = false;
         };
 
-        loadGithub();
-        window.setInterval(refreshLiveActivity, 120000);
+        loadGithub(false, true);
+        window.setInterval(() => loadGithub(true, true), refreshInterval);
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && Date.now() - lastActivityRefresh > 60000) refreshLiveActivity();
+            if (!document.hidden && Date.now() - lastActivityRefresh > cacheMaxAge) loadGithub(true, true);
         });
     }
 
