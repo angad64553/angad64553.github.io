@@ -225,7 +225,6 @@
     const githubSection = document.querySelector('[data-github-user]');
     if (githubSection) {
         const username = githubSection.dataset.githubUser;
-        const repository = githubSection.dataset.githubRepo;
         const dashboard = githubSection.querySelector('.github-dashboard');
         const status = document.getElementById('github-status');
         const calendar = document.getElementById('contribution-calendar');
@@ -432,65 +431,43 @@
             const repoList = document.getElementById('github-repo-list');
             if (!repoList || !Array.isArray(repos)) return;
             setText('github-stars', numberFormat.format(repos.reduce((sum, repo) => sum + Number(repo.stargazers_count || 0), 0)));
-            const projectSpecs = [
-                {
-                    title: 'Jarvis',
-                    names: ['Jarvis'],
-                    description: 'Private automation assistant focused on voice-driven workflows and practical desktop actions.',
-                    language: 'Automation',
-                    privateProject: true
-                },
-                {
-                    title: 'Portfolio Website',
-                    names: ['angad64553.github.io', 'portfolio-website'],
-                    description: 'Performance-first personal platform with accessible navigation, motion, and live engineering activity.',
-                    language: 'HTML · CSS · JavaScript'
-                },
-                {
-                    title: 'LMS (Enterprise Project)',
-                    names: [],
-                    description: 'Enterprise learning operations platform for role-aware dashboards, attendance, enrollment, and reporting.',
-                    language: 'Moodle · PHP',
-                    privateProject: true
-                }
-            ];
             const fragment = document.createDocumentFragment();
-            projectSpecs.forEach((project) => {
-                const repo = project.privateProject ? null : repos.find((item) => project.names.some((name) => item.name.toLowerCase() === name.toLowerCase()));
-                const card = document.createElement(repo ? 'a' : 'article');
-                card.className = `repo-card${repo ? '' : ' repo-card-static'}`;
-                if (repo) {
-                    card.href = repo.html_url;
-                    card.target = '_blank';
-                    card.rel = 'noopener noreferrer';
-                }
+            const featuredRepos = [...repos]
+                .filter((repo) => !repo.fork)
+                .sort((first, second) => (
+                    Number(second.stargazers_count || 0) - Number(first.stargazers_count || 0)
+                    || new Date(second.pushed_at || 0) - new Date(first.pushed_at || 0)
+                ))
+                .slice(0, 3);
+            featuredRepos.forEach((repo) => {
+                const card = document.createElement('a');
+                card.className = 'repo-card';
+                card.href = repo.html_url;
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
                 const name = document.createElement('strong');
-                name.textContent = project.title;
+                name.textContent = repo.name;
                 const description = document.createElement('p');
-                description.textContent = repo?.description || project.description;
+                description.textContent = repo.description || 'Public GitHub repository';
                 const meta = document.createElement('span');
                 meta.className = 'repo-meta';
                 const language = document.createElement('span');
                 language.className = 'repo-language';
                 const languageDot = document.createElement('i');
-                language.append(languageDot, document.createTextNode(project.language || repo?.language || 'Code'));
+                language.append(languageDot, document.createTextNode(repo.language || 'Code'));
                 const visibility = document.createElement('span');
-                visibility.textContent = repo ? `★ ${numberFormat.format(repo.stargazers_count)}` : 'Private project';
+                visibility.textContent = `★ ${numberFormat.format(repo.stargazers_count)}`;
                 meta.append(language, visibility);
                 card.append(name, description, meta);
-                if (repo) {
-                    const arrow = document.createElement('i');
-                    arrow.setAttribute('aria-hidden', 'true');
-                    arrow.textContent = '↗';
-                    card.appendChild(arrow);
-                }
+                const arrow = document.createElement('i');
+                arrow.setAttribute('aria-hidden', 'true');
+                arrow.textContent = '↗';
+                card.appendChild(arrow);
                 addSurfaceLight(card);
                 if (finePointer && !reduceMotion) {
                     const cursor = document.querySelector('.cursor');
-                    if (repo) {
-                        card.addEventListener('mouseenter', () => cursor?.classList.add('active', 'link'));
-                        card.addEventListener('mouseleave', () => cursor?.classList.remove('active', 'link'));
-                    }
+                    card.addEventListener('mouseenter', () => cursor?.classList.add('active', 'link'));
+                    card.addEventListener('mouseleave', () => cursor?.classList.remove('active', 'link'));
                     card.classList.add('magnetic-surface');
                     card.addEventListener('pointermove', (event) => {
                         const rect = card.getBoundingClientRect();
@@ -507,13 +484,12 @@
             repoList.replaceChildren(fragment);
         };
 
-        const renderLatestCommit = (commitData) => {
-            const commit = Array.isArray(commitData) ? commitData[0] : null;
+        const renderLatestCommit = (commitSearch) => {
+            const commit = Array.isArray(commitSearch?.items) ? commitSearch.items[0] : null;
             const message = commit?.commit?.message?.split('\n')[0];
             const time = commit?.commit?.committer?.date || commit?.commit?.author?.date;
             if (!message) return;
-            const canonicalRepository = commit?.html_url?.match(/^https:\/\/github\.com\/[^/]+\/([^/]+)\/commit\//)?.[1] || repository;
-            setText('latest-commit-repo', canonicalRepository);
+            setText('latest-commit-repo', commit?.repository?.name || commit?.repository?.full_name || 'GitHub');
             setText('latest-commit-message', message);
             const timeElement = document.getElementById('latest-commit-time');
             const commitCard = document.getElementById('latest-commit-card');
@@ -541,21 +517,18 @@
                 }
             }
             const encodedUser = encodeURIComponent(username);
-            const encodedRepo = encodeURIComponent(repository);
             const profileUrl = `https://api.github.com/users/${encodedUser}`;
             const reposUrl = `https://api.github.com/users/${encodedUser}/repos?per_page=100&sort=updated`;
-            const commitCountUrl = `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${username}`)}&per_page=1`;
-            const latestCommitUrl = `https://api.github.com/repos/${encodedUser}/${encodedRepo}/commits?per_page=1`;
+            const commitActivityUrl = `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${username}`)}&sort=committer-date&order=desc&per_page=1`;
             const contributionsUrl = `https://github-contributions-api.jogruber.de/v4/${encodedUser}?y=${currentYear}`;
             const requests = await Promise.allSettled([
                 fetchJSON(profileUrl, { headers: apiHeaders }, forceRefresh),
                 fetchJSON(reposUrl, { headers: apiHeaders }, forceRefresh),
-                fetchJSON(commitCountUrl, { headers: apiHeaders }, forceRefresh),
-                fetchJSON(latestCommitUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(commitActivityUrl, { headers: apiHeaders }, forceRefresh),
                 fetchJSON(contributionsUrl, {}, forceRefresh)
             ]);
             const values = requests.map((result) => result.status === 'fulfilled' ? result.value : null);
-            const [profile, repos, commitSearch, latestCommit, contributions] = values;
+            const [profile, repos, commitSearch, contributions] = values;
 
             if (profile) {
                 setText('github-name', profile.name || profile.login);
@@ -570,10 +543,13 @@
                 if (profileLink) profileLink.href = profile.html_url;
             }
             if (repos) renderRepositories(repos);
-            if (commitSearch && !commitSearch.incomplete_results) setText('github-commits', numberFormat.format(commitSearch.total_count));
-            if (latestCommit) renderLatestCommit(latestCommit);
+            const commitResultsComplete = commitSearch && !commitSearch.incomplete_results;
+            if (commitResultsComplete) {
+                setText('github-commits', numberFormat.format(commitSearch.total_count));
+                renderLatestCommit(commitSearch);
+            }
             else if (!quiet) {
-                setText('latest-commit-repo', 'Portfolio Website');
+                setText('latest-commit-repo', 'GitHub');
                 setText('latest-commit-message', 'Latest commit temporarily unavailable');
                 setText('latest-commit-time', 'GitHub API will retry automatically');
             }
@@ -583,8 +559,9 @@
 
             const successful = requests.filter((result) => result.status === 'fulfilled').length;
             if (status) {
-                status.className = successful < requests.length ? 'github-status error' : 'github-status';
-                status.textContent = successful === requests.length ? '' : successful > 1 ? 'Some live details are temporarily unavailable due to public API limits.' : 'GitHub activity is temporarily unavailable. Use the profile link to view it directly.';
+                const allComplete = successful === requests.length && commitResultsComplete;
+                status.className = allComplete ? 'github-status' : 'github-status error';
+                status.textContent = allComplete ? '' : successful > 1 ? 'Some live details are temporarily unavailable due to public API limits.' : 'GitHub activity is temporarily unavailable. Use the profile link to view it directly.';
             }
             dashboard?.setAttribute('aria-busy', 'false');
             lastActivityRefresh = Date.now();
