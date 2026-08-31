@@ -1,4 +1,4 @@
-/* Angad Sharma — dependency-free portfolio interactions */
+/* Angad Sharma — Interactive 3D Portfolio & Visual System */
 (() => {
     'use strict';
 
@@ -11,7 +11,64 @@
     const menuButton = document.querySelector('.menu-toggle');
     const menu = document.getElementById('nav-menu');
     const navLinks = [...document.querySelectorAll('.nav-link')];
+    const themeToggles = [...document.querySelectorAll('[data-theme-toggle]')];
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     let frameRequested = false;
+
+    /* Theme Management (Default: Light Mode) */
+    const getStoredTheme = () => {
+        try {
+            return localStorage.getItem('theme');
+        } catch (e) {
+            return null;
+        }
+    };
+
+    const setStoredTheme = (theme) => {
+        try {
+            localStorage.setItem('theme', theme);
+        } catch (e) {}
+    };
+
+    // Callback registry for 3D scene theme changes
+    const themeChangeListeners = [];
+
+    const applyTheme = (theme, persist = true) => {
+        const isDark = theme === 'dark';
+        const activeTheme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', activeTheme);
+        if (persist) setStoredTheme(activeTheme);
+
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', isDark ? '#0a0a0b' : '#f8f9fa');
+        }
+
+        themeToggles.forEach((toggle) => {
+            const nextMode = isDark ? 'light' : 'dark';
+            toggle.setAttribute('aria-label', `Switch to ${nextMode} mode`);
+            toggle.setAttribute('title', `Switch to ${nextMode} mode`);
+            const label = toggle.querySelector('.theme-toggle-label');
+            if (label) {
+                label.textContent = isDark ? 'Light mode' : 'Dark mode';
+            }
+        });
+
+        themeChangeListeners.forEach(listener => {
+            try { listener(isDark); } catch (e) {}
+        });
+    };
+
+    const initialTheme = getStoredTheme() === 'dark' ? 'dark' : 'light';
+    applyTheme(initialTheme, false);
+
+    themeToggles.forEach((toggle) => {
+        toggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme, true);
+        });
+    });
 
     const updateScrollUI = () => {
         const scrollTop = window.scrollY;
@@ -91,19 +148,389 @@
         spySections.forEach((section) => spyObserver.observe(section));
     }
 
-    const stars = document.getElementById('ambient-stars');
-    if (stars && !reduceMotion) {
-        const starFragment = document.createDocumentFragment();
-        for (let index = 0; index < 22; index += 1) {
-            const star = document.createElement('i');
-            star.className = 'ambient-star';
-            star.style.left = `${(index * 43 + 7) % 97}%`;
-            star.style.top = `${(index * 67 + 11) % 88}%`;
-            star.style.setProperty('--star-speed', `${7 + (index % 6) * 1.7}s`);
-            star.style.setProperty('--star-delay', `${-index * 0.53}s`);
-            starFragment.appendChild(star);
+    /* -------------------------------------------------------------
+       THREE.JS 3D INTERACTIVE HERO CORE
+    ------------------------------------------------------------- */
+    const initHero3D = () => {
+        const canvas = document.getElementById('hero-3d-canvas');
+        if (!canvas || typeof THREE === 'undefined' || reduceMotion) return;
+
+        const stage = canvas.parentElement;
+        let width = stage.clientWidth || 450;
+        let height = stage.clientHeight || 580;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+        camera.position.z = 7.5;
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas,
+            alpha: true,
+            antialias: true,
+            powerPreference: 'high-performance'
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const heroGroup = new THREE.Group();
+        scene.add(heroGroup);
+
+        // Core 1: Outer Icosahedron Wireframe
+        const icoGeo = new THREE.IcosahedronGeometry(2.35, 1);
+        const icoMat = new THREE.MeshBasicMaterial({
+            color: 0x4f46e5,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.4
+        });
+        const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+        heroGroup.add(icoMesh);
+
+        // Core 2: Inner Crystal Polyhedron
+        const crystalGeo = new THREE.DodecahedronGeometry(1.6, 0);
+        const crystalMat = new THREE.MeshStandardMaterial({
+            color: 0x6366f1,
+            roughness: 0.25,
+            metalness: 0.75,
+            transparent: true,
+            opacity: 0.6,
+            wireframe: false
+        });
+        const crystalMesh = new THREE.Mesh(crystalGeo, crystalMat);
+        heroGroup.add(crystalMesh);
+
+        // Core 3: Inner Wireframe Accent
+        const crystalWireMat = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.45
+        });
+        const crystalWireMesh = new THREE.Mesh(crystalGeo, crystalWireMat);
+        heroGroup.add(crystalWireMesh);
+
+        // Orbital Rings
+        const ringGeo1 = new THREE.TorusGeometry(3.1, 0.02, 16, 120);
+        const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.6 });
+        const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
+        ring1.rotation.x = Math.PI / 3;
+        heroGroup.add(ring1);
+
+        const ringGeo2 = new THREE.TorusGeometry(3.45, 0.015, 16, 120);
+        const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x818cf8, transparent: true, opacity: 0.45 });
+        const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+        ring2.rotation.y = Math.PI / 4;
+        heroGroup.add(ring2);
+
+        const ringGeo3 = new THREE.TorusGeometry(3.8, 0.012, 16, 120);
+        const ringMat3 = new THREE.MeshBasicMaterial({ color: 0xc7d2fe, transparent: true, opacity: 0.35 });
+        const ring3 = new THREE.Mesh(ringGeo3, ringMat3);
+        ring3.rotation.z = Math.PI / 6;
+        heroGroup.add(ring3);
+
+        // Floating Satellite Particle Nodes
+        const particleCount = 75;
+        const particleGeo = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const scales = new Float32Array(particleCount);
+
+        for (let i = 0; i < particleCount; i++) {
+            const radius = 2.2 + Math.random() * 1.9;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+
+            positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+            positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+            positions[i * 3 + 2] = radius * Math.cos(phi);
+            scales[i] = Math.random() * 0.08 + 0.03;
         }
-        stars.appendChild(starFragment);
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const particleMat = new THREE.PointsMaterial({
+            color: 0x4f46e5,
+            size: 0.09,
+            transparent: true,
+            opacity: 0.85
+        });
+        const particles = new THREE.Points(particleGeo, particleMat);
+        heroGroup.add(particles);
+
+        // Lights
+        const light1 = new THREE.DirectionalLight(0x4f46e5, 2.2);
+        light1.position.set(4, 5, 6);
+        scene.add(light1);
+
+        const light2 = new THREE.DirectionalLight(0x818cf8, 1.8);
+        light2.position.set(-4, -3, 4);
+        scene.add(light2);
+
+        const ambLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambLight);
+
+        // Theme Adapter
+        const updateColors = (isDark) => {
+            if (isDark) {
+                icoMat.color.setHex(0x38bdf8);
+                icoMat.opacity = 0.55;
+                crystalMat.color.setHex(0xa855f7);
+                crystalMat.opacity = 0.7;
+                crystalWireMat.color.setHex(0x38bdf8);
+                ringMat1.color.setHex(0x38bdf8);
+                ringMat2.color.setHex(0xa855f7);
+                ringMat3.color.setHex(0x818cf8);
+                particleMat.color.setHex(0x67e8f9);
+                light1.color.setHex(0x38bdf8);
+                light2.color.setHex(0xa855f7);
+                ambLight.color.setHex(0x1e1b4b);
+            } else {
+                icoMat.color.setHex(0x4f46e5);
+                icoMat.opacity = 0.4;
+                crystalMat.color.setHex(0x6366f1);
+                crystalMat.opacity = 0.6;
+                crystalWireMat.color.setHex(0xffffff);
+                ringMat1.color.setHex(0x4f46e5);
+                ringMat2.color.setHex(0x818cf8);
+                ringMat3.color.setHex(0xc7d2fe);
+                particleMat.color.setHex(0x4f46e5);
+                light1.color.setHex(0x4f46e5);
+                light2.color.setHex(0x818cf8);
+                ambLight.color.setHex(0xffffff);
+            }
+        };
+
+        const currentIsDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        updateColors(currentIsDark);
+        themeChangeListeners.push(updateColors);
+
+        // Mouse Gyro & Drag Rotation
+        let targetRotX = 0;
+        let targetRotY = 0;
+        let mouseX = 0;
+        let mouseY = 0;
+        let isDragging = false;
+        let prevPointerX = 0;
+        let prevPointerY = 0;
+
+        stage.addEventListener('pointermove', (e) => {
+            const rect = stage.getBoundingClientRect();
+            mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+            mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+            if (isDragging) {
+                const deltaX = e.clientX - prevPointerX;
+                const deltaY = e.clientY - prevPointerY;
+                heroGroup.rotation.y += deltaX * 0.01;
+                heroGroup.rotation.x += deltaY * 0.01;
+                prevPointerX = e.clientX;
+                prevPointerY = e.clientY;
+            }
+        }, { passive: true });
+
+        canvas.addEventListener('pointerdown', (e) => {
+            isDragging = true;
+            prevPointerX = e.clientX;
+            prevPointerY = e.clientY;
+        });
+
+        window.addEventListener('pointerup', () => { isDragging = false; });
+
+        // Animation Loop
+        let clock = new THREE.Clock();
+        const animate = () => {
+            requestAnimationFrame(animate);
+            const elapsed = clock.getElapsedTime();
+
+            if (!isDragging) {
+                heroGroup.rotation.y += 0.005;
+                heroGroup.rotation.x += 0.002;
+
+                // Subtle gyro tilt
+                targetRotX = mouseY * 0.4;
+                targetRotY = mouseX * 0.4;
+                heroGroup.rotation.x += (targetRotX - heroGroup.rotation.x) * 0.05;
+                heroGroup.rotation.y += (targetRotY - heroGroup.rotation.y) * 0.05;
+            }
+
+            // Orbital ring oscillations
+            ring1.rotation.z = elapsed * 0.35;
+            ring2.rotation.x = elapsed * -0.28;
+            ring3.rotation.y = elapsed * 0.22;
+
+            // Crystal pulse
+            const pulse = 1 + Math.sin(elapsed * 2) * 0.04;
+            crystalMesh.scale.set(pulse, pulse, pulse);
+            crystalWireMesh.scale.set(pulse, pulse, pulse);
+
+            particles.rotation.y = elapsed * 0.08;
+            particles.rotation.x = elapsed * 0.04;
+
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        // Responsive Resize
+        const onResize = () => {
+            width = stage.clientWidth || 450;
+            height = stage.clientHeight || 580;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        };
+        window.addEventListener('resize', onResize, { passive: true });
+    };
+
+    /* -------------------------------------------------------------
+       THREE.JS 3D AMBIENT BACKGROUND CONSTELLATION
+    ------------------------------------------------------------- */
+    const initAmbient3D = () => {
+        const canvas = document.getElementById('ambient-3d-canvas');
+        if (!canvas || typeof THREE === 'undefined' || reduceMotion) return;
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
+        camera.position.z = 400;
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas,
+            alpha: true,
+            antialias: false,
+            powerPreference: 'high-performance'
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+        const particleCount = 120;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const velocities = [];
+
+        for (let i = 0; i < particleCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 800;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 800;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 600;
+            velocities.push({
+                x: (Math.random() - 0.5) * 0.25,
+                y: (Math.random() - 0.5) * 0.25,
+                z: (Math.random() - 0.5) * 0.15
+            });
+        }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.PointsMaterial({
+            color: 0x4f46e5,
+            size: 3.5,
+            transparent: true,
+            opacity: 0.5
+        });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        const updateAmbientColor = (isDark) => {
+            material.color.setHex(isDark ? 0x818cf8 : 0x4f46e5);
+            material.opacity = isDark ? 0.6 : 0.4;
+        };
+        updateAmbientColor(document.documentElement.getAttribute('data-theme') === 'dark');
+        themeChangeListeners.push(updateAmbientColor);
+
+        let mouseX = 0;
+        let mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 60;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 60;
+        }, { passive: true });
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            const pos = geometry.attributes.position.array;
+
+            for (let i = 0; i < particleCount; i++) {
+                pos[i * 3] += velocities[i].x;
+                pos[i * 3 + 1] += velocities[i].y;
+                pos[i * 3 + 2] += velocities[i].z;
+
+                if (pos[i * 3] > 400 || pos[i * 3] < -400) velocities[i].x *= -1;
+                if (pos[i * 3 + 1] > 400 || pos[i * 3 + 1] < -400) velocities[i].y *= -1;
+                if (pos[i * 3 + 2] > 300 || pos[i * 3 + 2] < -300) velocities[i].z *= -1;
+            }
+            geometry.attributes.position.needsUpdate = true;
+
+            camera.position.x += (mouseX - camera.position.x) * 0.03;
+            camera.position.y += (-mouseY - (window.scrollY * 0.08) - camera.position.y) * 0.03;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }, { passive: true });
+    };
+
+    // Initialize 3D Scenes
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initHero3D();
+            initAmbient3D();
+        });
+    } else {
+        initHero3D();
+        initAmbient3D();
+    }
+
+    /* -------------------------------------------------------------
+       SPATIAL 3D CARD TILT & SPECULAR GLARE
+    ------------------------------------------------------------- */
+    if (finePointer && !reduceMotion) {
+        document.querySelectorAll('[data-tilt], .story-card, .skill-card, .project-card, .github-dashboard, .contact-form').forEach((card) => {
+            let isHovered = false;
+            let currentRx = 0;
+            let currentRy = 0;
+            let targetRx = 0;
+            let targetRy = 0;
+
+            const updateTilt = () => {
+                if (!isHovered) {
+                    targetRx *= 0.9;
+                    targetRy *= 0.9;
+                }
+                currentRx += (targetRx - currentRx) * 0.15;
+                currentRy += (targetRy - currentRy) * 0.15;
+
+                card.style.setProperty('--rx', `${currentRx}deg`);
+                card.style.setProperty('--ry', `${currentRy}deg`);
+
+                if (Math.abs(currentRx) > 0.05 || Math.abs(currentRy) > 0.05 || isHovered) {
+                    requestAnimationFrame(updateTilt);
+                }
+            };
+
+            card.addEventListener('pointerenter', () => {
+                isHovered = true;
+                requestAnimationFrame(updateTilt);
+            });
+
+            card.addEventListener('pointermove', (event) => {
+                const rect = card.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width - 0.5;
+                const y = (event.clientY - rect.top) / rect.height - 0.5;
+                targetRx = y * -6; // max 6deg
+                targetRy = x * 7;  // max 7deg
+            }, { passive: true });
+
+            card.addEventListener('pointerleave', () => {
+                isHovered = false;
+                targetRx = 0;
+                targetRy = 0;
+            });
+        });
     }
 
     const addSurfaceLight = (element) => {
@@ -121,21 +548,6 @@
     };
 
     document.querySelectorAll('.story-card, .skill-card, .project-card, .github-stat, .contact-form').forEach(addSurfaceLight);
-
-    if (finePointer && !reduceMotion) {
-        document.querySelectorAll('.story-card, .skill-card, .github-stat').forEach((element) => {
-            element.classList.add('magnetic-surface');
-            element.addEventListener('pointermove', (event) => {
-                const rect = element.getBoundingClientRect();
-                element.style.setProperty('--card-x', `${((event.clientX - rect.left) / rect.width - 0.5) * 3}px`);
-                element.style.setProperty('--card-y', `${((event.clientY - rect.top) / rect.height - 0.5) * 3}px`);
-            }, { passive: true });
-            element.addEventListener('pointerleave', () => {
-                element.style.setProperty('--card-x', '0px');
-                element.style.setProperty('--card-y', '0px');
-            });
-        });
-    }
 
     document.querySelectorAll('.button, .nav-cta').forEach((element) => {
         element.addEventListener('pointerdown', (event) => {
@@ -206,22 +618,11 @@
                 element.style.setProperty('--my', '0px');
             });
         });
-
-        document.querySelectorAll('[data-tilt]').forEach((element) => {
-            element.addEventListener('mousemove', (event) => {
-                const rect = element.getBoundingClientRect();
-                const x = (event.clientX - rect.left) / rect.width - 0.5;
-                const y = (event.clientY - rect.top) / rect.height - 0.5;
-                element.style.setProperty('--rx', `${y * -2.6}deg`);
-                element.style.setProperty('--ry', `${x * 3.2}deg`);
-            });
-            element.addEventListener('mouseleave', () => {
-                element.style.setProperty('--rx', '0deg');
-                element.style.setProperty('--ry', '0deg');
-            });
-        });
     }
 
+    /* -------------------------------------------------------------
+       LIVE GITHUB ACTIVITY LOADER
+    ------------------------------------------------------------- */
     const githubSection = document.querySelector('[data-github-user]');
     if (githubSection) {
         const username = githubSection.dataset.githubUser;
@@ -248,333 +649,60 @@
         const refreshInterval = 7 * 60 * 1000;
         const cacheMaxAge = 5 * 60 * 1000;
         const cacheFallbackAge = 24 * 60 * 60 * 1000;
-        const cachePrefix = `github-activity:v2:${username}:`;
         let lastActivityRefresh = 0;
         let activityRefreshing = false;
 
         const setText = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) element.textContent = value;
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
         };
 
-        const readCache = (url) => {
-            try {
-                const cached = JSON.parse(window.localStorage.getItem(`${cachePrefix}${url}`));
-                return cached?.savedAt && cached?.data ? cached : null;
-            } catch (error) {
-                return null;
-            }
-        };
+        const renderCalendar = (contributions) => {
+            if (!calendar) return;
+            calendar.innerHTML = '';
+            const today = new Date().toISOString().split('T')[0];
 
-        const writeCache = (url, data, etag = '') => {
-            try {
-                window.localStorage.setItem(`${cachePrefix}${url}`, JSON.stringify({
-                    savedAt: Date.now(),
-                    etag,
-                    data
-                }));
-            } catch (error) {
-                /* Live data still works when storage is unavailable. */
-            }
-        };
+            contributions.forEach((day) => {
+                const square = document.createElement('div');
+                square.className = 'contribution-day';
+                square.dataset.date = day.date;
+                square.dataset.count = day.count;
+                if (day.date === today) square.classList.add('is-today');
 
-        const fetchJSON = async (url, options = {}, forceRefresh = false) => {
-            const cached = readCache(url);
-            if (!forceRefresh && cached && Date.now() - cached.savedAt < cacheMaxAge) return cached.data;
-            const controller = new AbortController();
-            const timeout = window.setTimeout(() => controller.abort(), 10000);
-            try {
-                const headers = new Headers(options.headers || {});
-                if (cached?.etag) headers.set('If-None-Match', cached.etag);
-                const response = await fetch(url, { ...options, headers, cache: 'no-cache', signal: controller.signal });
-                if (response.status === 304 && cached) {
-                    writeCache(url, cached.data, cached.etag);
-                    return cached.data;
-                }
-                if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-                const data = await response.json();
-                writeCache(url, data, response.headers.get('etag') || '');
-                return data;
-            } catch (error) {
-                if (cached && Date.now() - cached.savedAt < cacheFallbackAge) return cached.data;
-                throw error;
-            } finally {
-                window.clearTimeout(timeout);
-            }
-        };
+                if (day.count === 0) square.dataset.level = '0';
+                else if (day.count <= 2) square.dataset.level = '1';
+                else if (day.count <= 5) square.dataset.level = '2';
+                else if (day.count <= 9) square.dataset.level = '3';
+                else square.dataset.level = '4';
 
-        const relativeTime = (dateValue) => {
-            const commitDate = new Date(dateValue);
-            const now = new Date();
-            const seconds = Math.round((commitDate.getTime() - now.getTime()) / 1000);
-            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const startOfCommitDay = new Date(commitDate.getFullYear(), commitDate.getMonth(), commitDate.getDate());
-            const dayDifference = Math.round((startOfCommitDay.getTime() - startOfToday.getTime()) / 86400000);
-            if (Math.abs(seconds) < 60) return 'Just now';
-            if (Math.abs(seconds) < 3600) return relativeFormat.format(Math.round(seconds / 60), 'minute');
-            if (dayDifference === 0) return 'Today';
-            if (dayDifference === -1) return 'Yesterday';
-            const ranges = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400]];
-            const match = ranges.find(([, size]) => Math.abs(seconds) >= size);
-            if (!match) return relativeFormat.format(Math.round(seconds / 3600), 'hour');
-            return relativeFormat.format(Math.round(seconds / match[1]), match[0]);
-        };
-
-        const calculateStreak = (days) => {
-            if (!days.length) return 0;
-            const now = new Date();
-            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            let index = days.findIndex((day) => day.date === today);
-            if (index < 0) index = days.length - 1;
-            if (days[index]?.count === 0) index -= 1;
-            let streak = 0;
-            while (index >= 0 && days[index].count > 0) {
-                streak += 1;
-                index -= 1;
-            }
-            return streak;
-        };
-
-        const renderCalendar = (data) => {
-            const sourceDays = Array.isArray(data?.contributions) ? data.contributions : [];
-            if (!calendar || !calendarMonths || !sourceDays.length) throw new Error('Contribution data unavailable');
-            const sourceByDate = new Map(sourceDays.map((day) => [day.date, day]));
-            const yearStart = new Date(currentYear, 0, 1, 12);
-            const yearEnd = new Date(currentYear, 11, 31, 12);
-            const days = [];
-            for (const cursor = new Date(yearStart); cursor <= yearEnd; cursor.setDate(cursor.getDate() + 1)) {
-                const date = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
-                const sourceDay = sourceByDate.get(date);
-                days.push({
-                    date,
-                    count: Number(sourceDay?.count || 0),
-                    level: Math.min(Number(sourceDay?.level) || 0, 4)
+                square.addEventListener('mouseenter', (e) => {
+                    if (!calendarTooltip) return;
+                    calendarTooltip.textContent = `${day.count} contributions on ${fullDateFormat.format(new Date(day.date))}`;
+                    calendarTooltip.classList.add('visible');
+                    const rect = square.getBoundingClientRect();
+                    calendarTooltip.style.transform = `translate3d(${rect.left + rect.width / 2 - 100}px, ${rect.top - 40}px, 0)`;
                 });
-            }
-            const dayFragment = document.createDocumentFragment();
-            const monthFragment = document.createDocumentFragment();
-            const leadingDays = yearStart.getDay();
-            const weekCount = Math.ceil((leadingDays + days.length) / 7);
-            const now = new Date();
-            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-
-            calendar.closest('.calendar-chart')?.style.setProperty('--week-count', String(weekCount));
-
-            for (let index = 0; index < leadingDays; index += 1) {
-                const emptyCell = document.createElement('span');
-                emptyCell.className = 'contribution-day is-empty';
-                dayFragment.appendChild(emptyCell);
-            }
-
-            const hideTooltip = () => {
-                calendarTooltip?.classList.remove('visible');
-                calendarTooltip?.setAttribute('aria-hidden', 'true');
-            };
-
-            const showTooltip = (event, day) => {
-                if (!calendarTooltip) return;
-                calendarTooltip.textContent = `${fullDateFormat.format(new Date(`${day.date}T12:00:00`))} · ${numberFormat.format(day.count)} contribution${day.count === 1 ? '' : 's'}`;
-                calendarTooltip.classList.add('visible');
-                calendarTooltip.setAttribute('aria-hidden', 'false');
-                const tooltipRect = calendarTooltip.getBoundingClientRect();
-                let left = event.clientX + 13;
-                let top = event.clientY - tooltipRect.height - 13;
-                if (left + tooltipRect.width > window.innerWidth - 8) left = event.clientX - tooltipRect.width - 13;
-                if (top < 8) top = event.clientY + 15;
-                calendarTooltip.style.transform = `translate3d(${Math.max(8, left)}px,${top}px,0)`;
-            };
-
-            for (let month = 0; month < 12; month += 1) {
-                const firstOfMonth = new Date(currentYear, month, 1, 12);
-                const dayOfYear = Math.round((firstOfMonth.getTime() - yearStart.getTime()) / 86400000);
-                const label = document.createElement('span');
-                label.textContent = monthFormat.format(firstOfMonth);
-                label.style.gridColumnStart = String(Math.floor((leadingDays + dayOfYear) / 7) + 1);
-                monthFragment.appendChild(label);
-            }
-
-            days.forEach((day) => {
-                const dayDate = new Date(`${day.date}T12:00:00`);
-                const cell = document.createElement('span');
-                cell.className = 'contribution-day';
-                cell.dataset.level = String(day.level);
-                cell.dataset.date = day.date;
-                cell.title = `${fullDateFormat.format(dayDate)}: ${numberFormat.format(day.count)} contribution${day.count === 1 ? '' : 's'}`;
-                if (day.date === today) cell.classList.add('is-today');
-                if (day.date > today) cell.classList.add('is-future');
-                cell.addEventListener('pointerenter', (event) => showTooltip(event, day));
-                cell.addEventListener('pointermove', (event) => showTooltip(event, day));
-                cell.addEventListener('pointerleave', hideTooltip);
-                cell.addEventListener('pointerdown', (event) => {
-                    if (event.pointerType === 'mouse') return;
-                    showTooltip(event, day);
-                    window.setTimeout(hideTooltip, 1700);
-                });
-                dayFragment.appendChild(cell);
+                square.addEventListener('mouseleave', () => calendarTooltip?.classList.remove('visible'));
+                calendar.appendChild(square);
             });
-            calendar.replaceChildren(dayFragment);
-            calendarMonths.replaceChildren(monthFragment);
-            const calendarScroll = calendar.closest('.calendar-scroll');
-            if (calendarScroll && !calendarScroll.dataset.tooltipBound) {
-                calendarScroll.addEventListener('scroll', hideTooltip, { passive: true });
-                calendarScroll.dataset.tooltipBound = 'true';
-            }
-            const reportedTotal = Number(data?.total?.[currentYear]);
-            const total = Number.isFinite(reportedTotal) ? reportedTotal : days.reduce((sum, day) => sum + day.count, 0);
-            calendar.setAttribute('aria-label', `${numberFormat.format(total)} GitHub contributions in ${currentYear}`);
-            setText('contribution-total', `${numberFormat.format(total)} contributions`);
-            setText('contribution-range', `Jan — Dec ${currentYear}`);
-            setText('github-streak', numberFormat.format(calculateStreak(days)));
         };
 
-        const renderRepositories = (repos) => {
-            const repoList = document.getElementById('github-repo-list');
-            if (!repoList || !Array.isArray(repos)) return;
-            setText('github-stars', numberFormat.format(repos.reduce((sum, repo) => sum + Number(repo.stargazers_count || 0), 0)));
-            const fragment = document.createDocumentFragment();
-            const featuredRepos = [...repos]
-                .filter((repo) => !repo.fork)
-                .sort((first, second) => (
-                    Number(second.stargazers_count || 0) - Number(first.stargazers_count || 0)
-                    || new Date(second.pushed_at || 0) - new Date(first.pushed_at || 0)
-                ))
-                .slice(0, 3);
-            featuredRepos.forEach((repo) => {
-                const card = document.createElement('a');
-                card.className = 'repo-card';
-                card.href = repo.html_url;
-                card.target = '_blank';
-                card.rel = 'noopener noreferrer';
-                const name = document.createElement('strong');
-                name.textContent = repo.name;
-                const description = document.createElement('p');
-                description.textContent = repo.description || 'Public GitHub repository';
-                const meta = document.createElement('span');
-                meta.className = 'repo-meta';
-                const language = document.createElement('span');
-                language.className = 'repo-language';
-                const languageDot = document.createElement('i');
-                language.append(languageDot, document.createTextNode(repo.language || 'Code'));
-                const visibility = document.createElement('span');
-                visibility.textContent = `★ ${numberFormat.format(repo.stargazers_count)}`;
-                meta.append(language, visibility);
-                card.append(name, description, meta);
-                const arrow = document.createElement('i');
-                arrow.setAttribute('aria-hidden', 'true');
-                arrow.textContent = '↗';
-                card.appendChild(arrow);
-                addSurfaceLight(card);
-                if (finePointer && !reduceMotion) {
-                    const cursor = document.querySelector('.cursor');
-                    card.addEventListener('mouseenter', () => cursor?.classList.add('active', 'link'));
-                    card.addEventListener('mouseleave', () => cursor?.classList.remove('active', 'link'));
-                    card.classList.add('magnetic-surface');
-                    card.addEventListener('pointermove', (event) => {
-                        const rect = card.getBoundingClientRect();
-                        card.style.setProperty('--card-x', `${((event.clientX - rect.left) / rect.width - 0.5) * 3}px`);
-                        card.style.setProperty('--card-y', `${((event.clientY - rect.top) / rect.height - 0.5) * 3}px`);
-                    }, { passive: true });
-                    card.addEventListener('pointerleave', () => {
-                        card.style.setProperty('--card-x', '0px');
-                        card.style.setProperty('--card-y', '0px');
-                    });
-                }
-                fragment.appendChild(card);
-            });
-            repoList.replaceChildren(fragment);
+        const fetchGithub = async () => {
+            try {
+                const userRes = await fetch(`https://api.github.com/users/${username}`, { headers: apiHeaders });
+                if (!userRes.ok) return;
+                const user = await userRes.json();
+                setText('github-repos', numberFormat.format(user.public_repos));
+                setText('github-name', user.name || username);
+                setText('github-username', `@${user.login}`);
+            } catch (e) {}
         };
-
-        const renderLatestCommit = (commitSearch) => {
-            const commit = Array.isArray(commitSearch?.items) ? commitSearch.items[0] : null;
-            const message = commit?.commit?.message?.split('\n')[0];
-            const time = commit?.commit?.committer?.date || commit?.commit?.author?.date;
-            if (!message) return;
-            setText('latest-commit-repo', commit?.repository?.name || commit?.repository?.full_name || 'GitHub');
-            setText('latest-commit-message', message);
-            const timeElement = document.getElementById('latest-commit-time');
-            const commitCard = document.getElementById('latest-commit-card');
-            if (timeElement && time) {
-                const exactDate = exactDateFormat.format(new Date(time));
-                timeElement.textContent = relativeTime(time);
-                timeElement.title = exactDate;
-                timeElement.setAttribute('aria-label', `${relativeTime(time)}. ${exactDate}`);
-                if (commitCard) commitCard.title = exactDate;
-            } else if (timeElement) {
-                timeElement.textContent = 'Recent public activity';
-                timeElement.removeAttribute('title');
-                commitCard?.removeAttribute('title');
-            }
-        };
-
-        const loadGithub = async (quiet = false, forceRefresh = false) => {
-            if (activityRefreshing) return;
-            activityRefreshing = true;
-            if (!quiet) {
-                dashboard?.setAttribute('aria-busy', 'true');
-                if (status) {
-                    status.className = 'github-status';
-                    status.textContent = 'Connecting to GitHub…';
-                }
-            }
-            const encodedUser = encodeURIComponent(username);
-            const profileUrl = `https://api.github.com/users/${encodedUser}`;
-            const reposUrl = `https://api.github.com/users/${encodedUser}/repos?per_page=100&sort=updated`;
-            const commitActivityUrl = `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${username}`)}&sort=committer-date&order=desc&per_page=1`;
-            const contributionsUrl = `https://github-contributions-api.jogruber.de/v4/${encodedUser}?y=${currentYear}`;
-            const requests = await Promise.allSettled([
-                fetchJSON(profileUrl, { headers: apiHeaders }, forceRefresh),
-                fetchJSON(reposUrl, { headers: apiHeaders }, forceRefresh),
-                fetchJSON(commitActivityUrl, { headers: apiHeaders }, forceRefresh),
-                fetchJSON(contributionsUrl, {}, forceRefresh)
-            ]);
-            const values = requests.map((result) => result.status === 'fulfilled' ? result.value : null);
-            const [profile, repos, commitSearch, contributions] = values;
-
-            if (profile) {
-                setText('github-name', profile.name || profile.login);
-                setText('github-handle', `@${profile.login}`);
-                setText('github-repos', numberFormat.format(profile.public_repos));
-                const avatar = document.getElementById('github-avatar');
-                if (avatar) {
-                    avatar.src = profile.avatar_url;
-                    avatar.alt = `${profile.name || profile.login} on GitHub`;
-                }
-                const profileLink = document.getElementById('github-profile-link');
-                if (profileLink) profileLink.href = profile.html_url;
-            }
-            if (repos) renderRepositories(repos);
-            const commitResultsComplete = commitSearch && !commitSearch.incomplete_results;
-            if (commitResultsComplete) {
-                setText('github-commits', numberFormat.format(commitSearch.total_count));
-                renderLatestCommit(commitSearch);
-            }
-            else if (!quiet) {
-                setText('latest-commit-repo', 'GitHub');
-                setText('latest-commit-message', 'Latest commit temporarily unavailable');
-                setText('latest-commit-time', 'GitHub API will retry automatically');
-            }
-            if (contributions) {
-                try { renderCalendar(contributions); } catch (error) { /* handled by status */ }
-            }
-
-            const successful = requests.filter((result) => result.status === 'fulfilled').length;
-            if (status) {
-                const allComplete = successful === requests.length && commitResultsComplete;
-                status.className = allComplete ? 'github-status' : 'github-status error';
-                status.textContent = allComplete ? '' : successful > 1 ? 'Some live details are temporarily unavailable due to public API limits.' : 'GitHub activity is temporarily unavailable. Use the profile link to view it directly.';
-            }
-            dashboard?.setAttribute('aria-busy', 'false');
-            lastActivityRefresh = Date.now();
-            activityRefreshing = false;
-        };
-
-        loadGithub(false, true);
-        window.setInterval(() => loadGithub(true, true), refreshInterval);
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && Date.now() - lastActivityRefresh > cacheMaxAge) loadGithub(true, true);
-        });
+        fetchGithub();
     }
 
+    /* -------------------------------------------------------------
+       CONTACT FORM SUBMISSION
+    ------------------------------------------------------------- */
     const form = document.getElementById('feedback-form');
     if (form) {
         const status = document.getElementById('form-status');
