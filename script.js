@@ -649,55 +649,361 @@
         const refreshInterval = 7 * 60 * 1000;
         const cacheMaxAge = 5 * 60 * 1000;
         const cacheFallbackAge = 24 * 60 * 60 * 1000;
+        const cachePrefix = `github-activity:v2:${username}:`;
         let lastActivityRefresh = 0;
         let activityRefreshing = false;
 
         const setText = (id, value) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = value;
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
         };
 
-        const renderCalendar = (contributions) => {
-            if (!calendar) return;
-            calendar.innerHTML = '';
-            const today = new Date().toISOString().split('T')[0];
-
-            contributions.forEach((day) => {
-                const square = document.createElement('div');
-                square.className = 'contribution-day';
-                square.dataset.date = day.date;
-                square.dataset.count = day.count;
-                if (day.date === today) square.classList.add('is-today');
-
-                if (day.count === 0) square.dataset.level = '0';
-                else if (day.count <= 2) square.dataset.level = '1';
-                else if (day.count <= 5) square.dataset.level = '2';
-                else if (day.count <= 9) square.dataset.level = '3';
-                else square.dataset.level = '4';
-
-                square.addEventListener('mouseenter', (e) => {
-                    if (!calendarTooltip) return;
-                    calendarTooltip.textContent = `${day.count} contributions on ${fullDateFormat.format(new Date(day.date))}`;
-                    calendarTooltip.classList.add('visible');
-                    const rect = square.getBoundingClientRect();
-                    calendarTooltip.style.transform = `translate3d(${rect.left + rect.width / 2 - 100}px, ${rect.top - 40}px, 0)`;
-                });
-                square.addEventListener('mouseleave', () => calendarTooltip?.classList.remove('visible'));
-                calendar.appendChild(square);
-            });
-        };
-
-        const fetchGithub = async () => {
+        const readCache = (url) => {
             try {
-                const userRes = await fetch(`https://api.github.com/users/${username}`, { headers: apiHeaders });
-                if (!userRes.ok) return;
-                const user = await userRes.json();
-                setText('github-repos', numberFormat.format(user.public_repos));
-                setText('github-name', user.name || username);
-                setText('github-username', `@${user.login}`);
-            } catch (e) {}
+                const cached = JSON.parse(window.localStorage.getItem(`${cachePrefix}${url}`));
+                return cached?.savedAt && cached?.data ? cached : null;
+            } catch (error) {
+                return null;
+            }
         };
-        fetchGithub();
+
+        const writeCache = (url, data, etag = '') => {
+            try {
+                window.localStorage.setItem(`${cachePrefix}${url}`, JSON.stringify({
+                    savedAt: Date.now(),
+                    etag,
+                    data
+                }));
+            } catch (error) {
+                /* Live data still works when storage is unavailable. */
+            }
+        };
+
+        const fetchJSON = async (url, options = {}, forceRefresh = false) => {
+            const cached = readCache(url);
+            if (!forceRefresh && cached && Date.now() - cached.savedAt < cacheMaxAge) return cached.data;
+            const controller = new AbortController();
+            const timeout = window.setTimeout(() => controller.abort(), 10000);
+            try {
+                const headers = new Headers(options.headers || {});
+                if (cached?.etag) headers.set('If-None-Match', cached.etag);
+                const response = await fetch(url, { ...options, headers, cache: 'no-cache', signal: controller.signal });
+                if (response.status === 304 && cached) {
+                    writeCache(url, cached.data, cached.etag);
+                    return cached.data;
+                }
+                if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+                const data = await response.json();
+                writeCache(url, data, response.headers.get('etag') || '');
+                return data;
+            } catch (error) {
+                if (cached && Date.now() - cached.savedAt < cacheFallbackAge) return cached.data;
+                throw error;
+            } finally {
+                window.clearTimeout(timeout);
+            }
+        };
+
+        const relativeTime = (dateValue) => {
+            const commitDate = new Date(dateValue);
+            const now = new Date();
+            const seconds = Math.round((commitDate.getTime() - now.getTime()) / 1000);
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfCommitDay = new Date(commitDate.getFullYear(), commitDate.getMonth(), commitDate.getDate());
+            const dayDifference = Math.round((startOfCommitDay.getTime() - startOfToday.getTime()) / 86400000);
+            if (Math.abs(seconds) < 60) return 'Just now';
+            if (Math.abs(seconds) < 3600) return relativeFormat.format(Math.round(seconds / 60), 'minute');
+            if (dayDifference === 0) return 'Today';
+            if (dayDifference === -1) return 'Yesterday';
+            const ranges = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400]];
+            const match = ranges.find(([, size]) => Math.abs(seconds) >= size);
+            if (!match) return relativeFormat.format(Math.round(seconds / 3600), 'hour');
+            return relativeFormat.format(Math.round(seconds / match[1]), match[0]);
+        };
+
+        const calculateStreak = (days) => {
+            if (!days.length) return 0;
+            const now = new Date();
+            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            let index = days.findIndex((day) => day.date === today);
+            if (index < 0) index = days.length - 1;
+            if (days[index]?.count === 0) index -= 1;
+            let streak = 0;
+            while (index >= 0 && days[index].count > 0) {
+                streak += 1;
+                index -= 1;
+            }
+            return streak;
+        };
+
+        const renderCalendar = (data) => {
+            const sourceDays = Array.isArray(data?.contributions) ? data.contributions : [];
+            if (!calendar || !calendarMonths || !sourceDays.length) throw new Error('Contribution data unavailable');
+            const sourceByDate = new Map(sourceDays.map((day) => [day.date, day]));
+            const yearStart = new Date(currentYear, 0, 1, 12);
+            const yearEnd = new Date(currentYear, 11, 31, 12);
+            const days = [];
+            for (const cursor = new Date(yearStart); cursor <= yearEnd; cursor.setDate(cursor.getDate() + 1)) {
+                const date = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
+                const sourceDay = sourceByDate.get(date);
+                days.push({
+                    date,
+                    count: Number(sourceDay?.count || 0),
+                    level: Math.min(Number(sourceDay?.level) || 0, 4)
+                });
+            }
+            const dayFragment = document.createDocumentFragment();
+            const monthFragment = document.createDocumentFragment();
+            const leadingDays = yearStart.getDay();
+            const weekCount = Math.ceil((leadingDays + days.length) / 7);
+            const now = new Date();
+            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+            calendar.closest('.calendar-chart')?.style.setProperty('--week-count', String(weekCount));
+
+            for (let index = 0; index < leadingDays; index += 1) {
+                const emptyCell = document.createElement('span');
+                emptyCell.className = 'contribution-day is-empty';
+                dayFragment.appendChild(emptyCell);
+            }
+
+            const hideTooltip = () => {
+                calendarTooltip?.classList.remove('visible');
+                calendarTooltip?.setAttribute('aria-hidden', 'true');
+            };
+
+            const showTooltip = (event, day) => {
+                if (!calendarTooltip) return;
+                calendarTooltip.textContent = `${fullDateFormat.format(new Date(`${day.date}T12:00:00`))} · ${numberFormat.format(day.count)} contribution${day.count === 1 ? '' : 's'}`;
+                calendarTooltip.classList.add('visible');
+                calendarTooltip.setAttribute('aria-hidden', 'false');
+                const tooltipRect = calendarTooltip.getBoundingClientRect();
+                let left = event.clientX + 13;
+                let top = event.clientY - tooltipRect.height - 13;
+                if (left + tooltipRect.width > window.innerWidth - 8) left = event.clientX - tooltipRect.width - 13;
+                if (top < 8) top = event.clientY + 15;
+                calendarTooltip.style.transform = `translate3d(${Math.max(8, left)}px,${top}px,0)`;
+            };
+
+            for (let month = 0; month < 12; month += 1) {
+                const firstOfMonth = new Date(currentYear, month, 1, 12);
+                const dayOfYear = Math.round((firstOfMonth.getTime() - yearStart.getTime()) / 86400000);
+                const label = document.createElement('span');
+                label.textContent = monthFormat.format(firstOfMonth);
+                label.style.gridColumnStart = String(Math.floor((leadingDays + dayOfYear) / 7) + 1);
+                monthFragment.appendChild(label);
+            }
+
+            days.forEach((day) => {
+                const dayDate = new Date(`${day.date}T12:00:00`);
+                const cell = document.createElement('span');
+                cell.className = 'contribution-day';
+                cell.dataset.level = String(day.level);
+                cell.dataset.date = day.date;
+                cell.title = `${fullDateFormat.format(dayDate)}: ${numberFormat.format(day.count)} contribution${day.count === 1 ? '' : 's'}`;
+                if (day.date === today) cell.classList.add('is-today');
+                if (day.date > today) cell.classList.add('is-future');
+                cell.addEventListener('pointerenter', (event) => showTooltip(event, day));
+                cell.addEventListener('pointermove', (event) => showTooltip(event, day));
+                cell.addEventListener('pointerleave', hideTooltip);
+                cell.addEventListener('pointerdown', (event) => {
+                    if (event.pointerType === 'mouse') return;
+                    showTooltip(event, day);
+                    window.setTimeout(hideTooltip, 1700);
+                });
+                dayFragment.appendChild(cell);
+            });
+            calendar.replaceChildren(dayFragment);
+            calendarMonths.replaceChildren(monthFragment);
+            const calendarScroll = calendar.closest('.calendar-scroll');
+            if (calendarScroll && !calendarScroll.dataset.tooltipBound) {
+                calendarScroll.addEventListener('scroll', hideTooltip, { passive: true });
+                calendarScroll.dataset.tooltipBound = 'true';
+            }
+            const reportedTotal = Number(data?.total?.[currentYear]);
+            const total = Number.isFinite(reportedTotal) ? reportedTotal : days.reduce((sum, day) => sum + day.count, 0);
+            calendar.setAttribute('aria-label', `${numberFormat.format(total)} GitHub contributions in ${currentYear}`);
+            setText('contribution-total', `${numberFormat.format(total)} contributions`);
+            setText('contribution-range', `Jan — Dec ${currentYear}`);
+            setText('github-streak', numberFormat.format(calculateStreak(days)));
+        };
+
+        const renderRepositories = (repos) => {
+            const repoList = document.getElementById('github-repo-list');
+            if (!repoList || !Array.isArray(repos)) return;
+            setText('github-stars', numberFormat.format(repos.reduce((sum, repo) => sum + Number(repo.stargazers_count || 0), 0)));
+            const fragment = document.createDocumentFragment();
+            const nonForkRepos = repos.filter((repo) => !repo.fork);
+            const featuredRepos = (nonForkRepos.length ? nonForkRepos : repos)
+                .sort((first, second) => (
+                    Number(second.stargazers_count || 0) - Number(first.stargazers_count || 0)
+                    || new Date(second.pushed_at || 0) - new Date(first.pushed_at || 0)
+                ))
+                .slice(0, 3);
+            featuredRepos.forEach((repo) => {
+                const card = document.createElement('a');
+                card.className = 'repo-card';
+                card.href = repo.html_url;
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
+                const name = document.createElement('strong');
+                name.textContent = repo.name;
+                const description = document.createElement('p');
+                description.textContent = repo.description || 'Public GitHub repository';
+                const meta = document.createElement('span');
+                meta.className = 'repo-meta';
+                const language = document.createElement('span');
+                language.className = 'repo-language';
+                const languageDot = document.createElement('i');
+                language.append(languageDot, document.createTextNode(repo.language || 'Code'));
+                const visibility = document.createElement('span');
+                visibility.textContent = `★ ${numberFormat.format(repo.stargazers_count || 0)}`;
+                meta.append(language, visibility);
+                card.append(name, description, meta);
+                const arrow = document.createElement('i');
+                arrow.setAttribute('aria-hidden', 'true');
+                arrow.textContent = '↗';
+                card.appendChild(arrow);
+                addSurfaceLight(card);
+                if (finePointer && !reduceMotion) {
+                    const cursor = document.querySelector('.cursor');
+                    card.addEventListener('mouseenter', () => cursor?.classList.add('active', 'link'));
+                    card.addEventListener('mouseleave', () => cursor?.classList.remove('active', 'link'));
+                    card.classList.add('magnetic-surface');
+                    card.addEventListener('pointermove', (event) => {
+                        const rect = card.getBoundingClientRect();
+                        card.style.setProperty('--card-x', `${((event.clientX - rect.left) / rect.width - 0.5) * 3}px`);
+                        card.style.setProperty('--card-y', `${((event.clientY - rect.top) / rect.height - 0.5) * 3}px`);
+                    }, { passive: true });
+                    card.addEventListener('pointerleave', () => {
+                        card.style.setProperty('--card-x', '0px');
+                        card.style.setProperty('--card-y', '0px');
+                    });
+                }
+                fragment.appendChild(card);
+            });
+            repoList.replaceChildren(fragment);
+        };
+
+        const renderLatestCommit = (commitSearch, repos, events) => {
+            let message = '';
+            let repoName = '';
+            let time = '';
+
+            const commit = Array.isArray(commitSearch?.items) && commitSearch.items.length ? commitSearch.items[0] : null;
+            if (commit) {
+                message = commit?.commit?.message?.split('\n')[0];
+                repoName = commit?.repository?.name || commit?.repository?.full_name;
+                time = commit?.commit?.committer?.date || commit?.commit?.author?.date;
+            }
+
+            if (!message && Array.isArray(events)) {
+                const pushEvent = events.find((e) => e.type === 'PushEvent' && e.payload?.commits?.length);
+                if (pushEvent) {
+                    message = pushEvent.payload.commits[pushEvent.payload.commits.length - 1]?.message?.split('\n')[0];
+                    repoName = pushEvent.repo?.name?.split('/')[1] || pushEvent.repo?.name;
+                    time = pushEvent.created_at;
+                }
+            }
+
+            if (!message && Array.isArray(repos) && repos.length) {
+                const latestRepo = [...repos].sort((a, b) => new Date(b.pushed_at || 0) - new Date(a.pushed_at || 0))[0];
+                if (latestRepo) {
+                    message = `Pushed updates to ${latestRepo.name}`;
+                    repoName = latestRepo.name;
+                    time = latestRepo.pushed_at;
+                }
+            }
+
+            if (!message) return;
+            setText('latest-commit-repo', repoName || 'GitHub');
+            setText('latest-commit-message', message);
+            const timeElement = document.getElementById('latest-commit-time');
+            const commitCard = document.getElementById('latest-commit-card');
+            if (timeElement && time) {
+                const exactDate = exactDateFormat.format(new Date(time));
+                timeElement.textContent = relativeTime(time);
+                timeElement.title = exactDate;
+                timeElement.setAttribute('aria-label', `${relativeTime(time)}. ${exactDate}`);
+                if (commitCard) commitCard.title = exactDate;
+            } else if (timeElement) {
+                timeElement.textContent = 'Recent public activity';
+                timeElement.removeAttribute('title');
+                commitCard?.removeAttribute('title');
+            }
+        };
+
+        const loadGithub = async (quiet = false, forceRefresh = false) => {
+            if (activityRefreshing) return;
+            activityRefreshing = true;
+            if (!quiet) {
+                dashboard?.setAttribute('aria-busy', 'true');
+                if (status) {
+                    status.className = 'github-status';
+                    status.textContent = 'Connecting to GitHub…';
+                }
+            }
+            const encodedUser = encodeURIComponent(username);
+            const profileUrl = `https://api.github.com/users/${encodedUser}`;
+            const reposUrl = `https://api.github.com/users/${encodedUser}/repos?per_page=100&sort=updated`;
+            const commitActivityUrl = `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${username}`)}&sort=committer-date&order=desc&per_page=1`;
+            const eventsUrl = `https://api.github.com/users/${encodedUser}/events/public?per_page=10`;
+            const contributionsUrl = `https://github-contributions-api.jogruber.de/v4/${encodedUser}?y=${currentYear}`;
+            const requests = await Promise.allSettled([
+                fetchJSON(profileUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(reposUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(commitActivityUrl, { headers: apiHeaders }, forceRefresh),
+                fetchJSON(contributionsUrl, {}, forceRefresh),
+                fetchJSON(eventsUrl, { headers: apiHeaders }, forceRefresh)
+            ]);
+            const values = requests.map((result) => result.status === 'fulfilled' ? result.value : null);
+            const [profile, repos, commitSearch, contributions, events] = values;
+
+            if (profile) {
+                setText('github-name', profile.name || profile.login);
+                setText('github-handle', `@${profile.login}`);
+                setText('github-repos', numberFormat.format(profile.public_repos));
+                const avatar = document.getElementById('github-avatar');
+                if (avatar) {
+                    avatar.src = profile.avatar_url;
+                    avatar.alt = `${profile.name || profile.login} on GitHub`;
+                }
+                const profileLink = document.getElementById('github-profile-link');
+                if (profileLink) profileLink.href = profile.html_url;
+            }
+            if (repos) renderRepositories(repos);
+
+            const commitResultsComplete = commitSearch && !commitSearch.incomplete_results && typeof commitSearch.total_count === 'number';
+            if (commitResultsComplete) {
+                setText('github-commits', numberFormat.format(commitSearch.total_count));
+            } else if (contributions?.total) {
+                const totalContributions = Object.values(contributions.total).reduce((sum, n) => sum + Number(n || 0), 0);
+                if (totalContributions > 0) {
+                    setText('github-commits', numberFormat.format(totalContributions));
+                }
+            }
+            renderLatestCommit(commitSearch, repos, events);
+
+            if (contributions) {
+                try { renderCalendar(contributions); } catch (error) { /* handled by status */ }
+            }
+
+            const successful = requests.filter((result) => result.status === 'fulfilled').length;
+            if (status) {
+                const allComplete = successful >= 3;
+                status.className = allComplete ? 'github-status' : 'github-status error';
+                status.textContent = allComplete ? '' : successful > 0 ? 'Some live details are temporarily unavailable due to public API limits.' : 'GitHub activity is temporarily unavailable. Use the profile link to view it directly.';
+            }
+            dashboard?.setAttribute('aria-busy', 'false');
+            lastActivityRefresh = Date.now();
+            activityRefreshing = false;
+        };
+
+        loadGithub(false, true);
+        window.setInterval(() => loadGithub(true, true), refreshInterval);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && Date.now() - lastActivityRefresh > cacheMaxAge) loadGithub(true, true);
+        });
     }
 
     /* -------------------------------------------------------------
