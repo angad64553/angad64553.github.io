@@ -175,80 +175,92 @@
         const heroGroup = new THREE.Group();
         scene.add(heroGroup);
 
-        // Core 1: Outer Icosahedron Wireframe
-        const icoGeo = new THREE.IcosahedronGeometry(2.35, 1);
+        // Core 1: Holographic Outer Icosahedron Wireframe
+        const icoGeo = new THREE.IcosahedronGeometry(3.1, 1);
         const icoMat = new THREE.MeshBasicMaterial({
             color: 0x4f46e5,
             wireframe: true,
             transparent: true,
-            opacity: 0.4
+            opacity: 0.26
         });
         const icoMesh = new THREE.Mesh(icoGeo, icoMat);
         heroGroup.add(icoMesh);
 
-        // Core 2: Inner Crystal Polyhedron
-        const crystalGeo = new THREE.DodecahedronGeometry(1.6, 0);
-        const crystalMat = new THREE.MeshStandardMaterial({
-            color: 0x6366f1,
-            roughness: 0.25,
-            metalness: 0.75,
-            transparent: true,
-            opacity: 0.6,
-            wireframe: false
-        });
-        const crystalMesh = new THREE.Mesh(crystalGeo, crystalMat);
-        heroGroup.add(crystalMesh);
-
-        // Core 3: Inner Wireframe Accent
-        const crystalWireMat = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.45
-        });
-        const crystalWireMesh = new THREE.Mesh(crystalGeo, crystalWireMat);
-        heroGroup.add(crystalWireMesh);
-
-        // Orbital Rings
-        const ringGeo1 = new THREE.TorusGeometry(3.1, 0.02, 16, 120);
-        const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.6 });
+        // Core 2: Orbital Gyro Rings framing the central portrait portal
+        const ringGeo1 = new THREE.TorusGeometry(2.95, 0.022, 16, 120);
+        const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.65 });
         const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
         ring1.rotation.x = Math.PI / 3;
         heroGroup.add(ring1);
 
-        const ringGeo2 = new THREE.TorusGeometry(3.45, 0.015, 16, 120);
-        const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x818cf8, transparent: true, opacity: 0.45 });
+        const ringGeo2 = new THREE.TorusGeometry(3.4, 0.016, 16, 120);
+        const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x818cf8, transparent: true, opacity: 0.5 });
         const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
-        ring2.rotation.y = Math.PI / 4;
+        ring2.rotation.y = Math.PI / 3.5;
         heroGroup.add(ring2);
 
-        const ringGeo3 = new THREE.TorusGeometry(3.8, 0.012, 16, 120);
-        const ringMat3 = new THREE.MeshBasicMaterial({ color: 0xc7d2fe, transparent: true, opacity: 0.35 });
+        const ringGeo3 = new THREE.TorusGeometry(3.85, 0.012, 16, 120);
+        const ringMat3 = new THREE.MeshBasicMaterial({ color: 0xc7d2fe, transparent: true, opacity: 0.4 });
         const ring3 = new THREE.Mesh(ringGeo3, ringMat3);
-        ring3.rotation.z = Math.PI / 6;
+        ring3.rotation.z = Math.PI / 5;
         heroGroup.add(ring3);
 
-        // Floating Satellite Particle Nodes
-        const particleCount = 75;
+        // Core 3: 3D Orbiting Satellite Nodes (LMS, PHP, MySQL Data Beacons)
+        const satelliteNodes = [];
+        const satGeo = new THREE.DodecahedronGeometry(0.2, 0);
+        const satGeoWire = new THREE.DodecahedronGeometry(0.28, 0);
+
+        for (let i = 0; i < 3; i++) {
+            const satGroup = new THREE.Group();
+            const satMat = new THREE.MeshStandardMaterial({
+                color: 0x6366f1,
+                roughness: 0.2,
+                metalness: 0.8,
+                transparent: true,
+                opacity: 0.85
+            });
+            const satMesh = new THREE.Mesh(satGeo, satMat);
+            const satWireMat = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.55
+            });
+            const satWireMesh = new THREE.Mesh(satGeoWire, satWireMat);
+            satGroup.add(satMesh);
+            satGroup.add(satWireMesh);
+
+            heroGroup.add(satGroup);
+            satelliteNodes.push({
+                group: satGroup,
+                mesh: satMesh,
+                wireMesh: satWireMesh,
+                radius: 3.0 + i * 0.45,
+                speed: 0.45 + i * 0.16,
+                angleOffset: (i * Math.PI * 2) / 3,
+                inclination: (i * Math.PI) / 5.5
+            });
+        }
+
+        // Floating Quantum Constellation Particles
+        const particleCount = 140;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
-        const scales = new Float32Array(particleCount);
 
         for (let i = 0; i < particleCount; i++) {
-            const radius = 2.2 + Math.random() * 1.9;
+            const radius = 2.4 + Math.random() * 2.2;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos((Math.random() * 2) - 1);
 
             positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
             positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
             positions[i * 3 + 2] = radius * Math.cos(phi);
-            scales[i] = Math.random() * 0.08 + 0.03;
         }
         particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
         const particleMat = new THREE.PointsMaterial({
             color: 0x4f46e5,
-            size: 0.09,
+            size: 0.085,
             transparent: true,
             opacity: 0.85
         });
@@ -256,25 +268,22 @@
         heroGroup.add(particles);
 
         // Lights
-        const light1 = new THREE.DirectionalLight(0x4f46e5, 2.2);
+        const light1 = new THREE.DirectionalLight(0x4f46e5, 2.4);
         light1.position.set(4, 5, 6);
         scene.add(light1);
 
-        const light2 = new THREE.DirectionalLight(0x818cf8, 1.8);
+        const light2 = new THREE.DirectionalLight(0x818cf8, 2.0);
         light2.position.set(-4, -3, 4);
         scene.add(light2);
 
-        const ambLight = new THREE.AmbientLight(0xffffff, 0.7);
+        const ambLight = new THREE.AmbientLight(0xffffff, 0.75);
         scene.add(ambLight);
 
         // Theme Adapter
         const updateColors = (isDark) => {
             if (isDark) {
                 icoMat.color.setHex(0x38bdf8);
-                icoMat.opacity = 0.55;
-                crystalMat.color.setHex(0xa855f7);
-                crystalMat.opacity = 0.7;
-                crystalWireMat.color.setHex(0x38bdf8);
+                icoMat.opacity = 0.35;
                 ringMat1.color.setHex(0x38bdf8);
                 ringMat2.color.setHex(0xa855f7);
                 ringMat3.color.setHex(0x818cf8);
@@ -282,12 +291,13 @@
                 light1.color.setHex(0x38bdf8);
                 light2.color.setHex(0xa855f7);
                 ambLight.color.setHex(0x1e1b4b);
+                satelliteNodes.forEach((node) => {
+                    node.mesh.material.color.setHex(0xa855f7);
+                    node.wireMesh.material.color.setHex(0x38bdf8);
+                });
             } else {
                 icoMat.color.setHex(0x4f46e5);
-                icoMat.opacity = 0.4;
-                crystalMat.color.setHex(0x6366f1);
-                crystalMat.opacity = 0.6;
-                crystalWireMat.color.setHex(0xffffff);
+                icoMat.opacity = 0.26;
                 ringMat1.color.setHex(0x4f46e5);
                 ringMat2.color.setHex(0x818cf8);
                 ringMat3.color.setHex(0xc7d2fe);
@@ -295,6 +305,10 @@
                 light1.color.setHex(0x4f46e5);
                 light2.color.setHex(0x818cf8);
                 ambLight.color.setHex(0xffffff);
+                satelliteNodes.forEach((node) => {
+                    node.mesh.material.color.setHex(0x6366f1);
+                    node.wireMesh.material.color.setHex(0xffffff);
+                });
             }
         };
 
@@ -341,28 +355,34 @@
             const elapsed = clock.getElapsedTime();
 
             if (!isDragging) {
-                heroGroup.rotation.y += 0.005;
-                heroGroup.rotation.x += 0.002;
+                heroGroup.rotation.y += 0.0035;
+                heroGroup.rotation.x += 0.0015;
 
                 // Subtle gyro tilt
-                targetRotX = mouseY * 0.4;
-                targetRotY = mouseX * 0.4;
+                targetRotX = mouseY * 0.35;
+                targetRotY = mouseX * 0.35;
                 heroGroup.rotation.x += (targetRotX - heroGroup.rotation.x) * 0.05;
                 heroGroup.rotation.y += (targetRotY - heroGroup.rotation.y) * 0.05;
             }
 
             // Orbital ring oscillations
-            ring1.rotation.z = elapsed * 0.35;
-            ring2.rotation.x = elapsed * -0.28;
-            ring3.rotation.y = elapsed * 0.22;
+            ring1.rotation.z = elapsed * 0.3;
+            ring2.rotation.x = elapsed * -0.24;
+            ring3.rotation.y = elapsed * 0.18;
 
-            // Crystal pulse
-            const pulse = 1 + Math.sin(elapsed * 2) * 0.04;
-            crystalMesh.scale.set(pulse, pulse, pulse);
-            crystalWireMesh.scale.set(pulse, pulse, pulse);
+            // Orbiting satellite nodes
+            satelliteNodes.forEach((node) => {
+                const t = elapsed * node.speed + node.angleOffset;
+                node.group.position.x = Math.cos(t) * node.radius;
+                node.group.position.y = Math.sin(t * 1.2) * Math.sin(node.inclination) * 1.4;
+                node.group.position.z = Math.sin(t) * node.radius * Math.cos(node.inclination);
+                node.group.rotation.x += 0.02;
+                node.group.rotation.y += 0.03;
+            });
 
-            particles.rotation.y = elapsed * 0.08;
-            particles.rotation.x = elapsed * 0.04;
+            // Particle drift
+            particles.rotation.y = elapsed * 0.05;
+            particles.rotation.x = elapsed * 0.025;
 
             renderer.render(scene, camera);
         };
@@ -521,8 +541,11 @@
                 const rect = card.getBoundingClientRect();
                 const x = (event.clientX - rect.left) / rect.width - 0.5;
                 const y = (event.clientY - rect.top) / rect.height - 0.5;
-                targetRx = y * -6; // max 6deg
-                targetRy = x * 7;  // max 7deg
+                const isSkill = card.classList.contains('skill-card');
+                const maxRx = isSkill ? 9 : 6;
+                const maxRy = isSkill ? 11 : 7;
+                targetRx = y * -maxRx;
+                targetRy = x * maxRy;
             }, { passive: true });
 
             card.addEventListener('pointerleave', () => {
@@ -1088,6 +1111,54 @@
                 submitButton?.removeAttribute('disabled');
                 submitButton?.classList.remove('is-loading');
                 if (buttonLabel) buttonLabel.textContent = 'Send message';
+            }
+        });
+    }
+
+    /* -------------------------------------------------------------
+       ORIGINAL QUALITY PHOTO LIGHTBOX MODAL CONTROLLER
+    ------------------------------------------------------------- */
+    const photoModal = document.getElementById('photo-modal');
+    if (photoModal) {
+        let lastFocusedElement = null;
+
+        const openModal = () => {
+            lastFocusedElement = document.activeElement;
+            photoModal.removeAttribute('hidden');
+            document.body.style.overflow = 'hidden';
+            const closeBtn = photoModal.querySelector('.photo-modal-close');
+            closeBtn?.focus();
+        };
+
+        const closeModal = () => {
+            photoModal.setAttribute('hidden', '');
+            document.body.style.overflow = '';
+            if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+                lastFocusedElement.focus();
+            }
+        };
+
+        document.querySelectorAll('[data-open-photo], #profile-portal, .portal-zoom-btn').forEach((trigger) => {
+            trigger.addEventListener('click', (e) => {
+                if (e.target.closest('a[download]')) return;
+                e.preventDefault();
+                openModal();
+            });
+            trigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openModal();
+                }
+            });
+        });
+
+        photoModal.querySelectorAll('[data-close-modal]').forEach((closer) => {
+            closer.addEventListener('click', closeModal);
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !photoModal.hasAttribute('hidden')) {
+                closeModal();
             }
         });
     }

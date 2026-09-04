@@ -16,18 +16,20 @@
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="Angad Sharma | LMS &amp; PHP Developer | Moodle Developer">
     <meta property="og:description" content="Portfolio of Angad Sharma — LMS Associate, Moodle Developer, and PHP Developer building learning management systems, custom dashboards, and education technology solutions.">
-    <meta property="og:image" content="https://angad07.com/og-image-generated.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Angad Sharma, LMS and PHP Developer">
+    <meta property="og:image" content="https://angad07.com/angad-sharma-lms.jpg">
+    <meta property="og:image:secure_url" content="https://angad07.com/angad-sharma-lms.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:image:alt" content="Angad Sharma LMS Associate and Moodle Developer Photo">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Angad Sharma | LMS &amp; PHP Developer | Moodle Developer">
     <meta name="twitter:description" content="Portfolio of Angad Sharma — LMS Associate, Moodle Developer, and PHP Developer building learning management systems, custom dashboards, and education technology solutions.">
-    <meta name="twitter:image" content="https://angad07.com/og-image-generated.png">
+    <meta name="twitter:image" content="https://angad07.com/angad-sharma-lms.jpg">
+    <meta name="twitter:image:alt" content="Angad Sharma LMS Associate and Moodle Developer Photo">
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         (() => {
@@ -47,12 +49,29 @@
         "@type": "Person",
         "@id": "https://angad07.com/#person",
         "name": "Angad Sharma",
+        "alternateName": [
+            "Angad Sharma LMS",
+            "Angad LMS",
+            "Angad Sharma Moodle Developer",
+            "Angad Sharma PHP Developer"
+        ],
         "url": "https://angad07.com/",
         "email": "mailto:angad64553@gmail.com",
         "telephone": "+917052478516",
-        "jobTitle": "LMS Associate and PHP Developer",
+        "jobTitle": "LMS Associate & PHP Developer",
         "description": "LMS Associate, Moodle Developer, and PHP Developer building learning management systems, custom dashboards, and education technology solutions.",
-        "image": "https://angad07.com/og-image-generated.png",
+        "image": {
+            "@type": "ImageObject",
+            "@id": "https://angad07.com/#primaryimage",
+            "url": "https://angad07.com/angad-sharma-lms.jpg",
+            "contentUrl": "https://angad07.com/angad-sharma-lms.jpg",
+            "name": "Angad Sharma LMS Photo",
+            "caption": "Angad Sharma - LMS Associate and Moodle Developer portrait photo",
+            "description": "Official professional original quality photo of Angad Sharma, LMS Associate, Moodle Developer, and PHP Developer",
+            "width": 1024,
+            "height": 1024,
+            "encodingFormat": "image/jpeg"
+        },
         "address": {
             "@type": "PostalAddress",
             "addressLocality": "Noida",
@@ -75,7 +94,16 @@
             "@type": "Country",
             "name": "India"
         },
-        "knowsAbout": ["Learning Management Systems", "Moodle LMS", "Moodle Development", "PHP", "MySQL", "JavaScript", "Education Technology", "Web Development"]
+        "knowsAbout": [
+            "Learning Management Systems",
+            "Moodle LMS",
+            "Moodle Development",
+            "PHP",
+            "MySQL",
+            "JavaScript",
+            "Education Technology",
+            "Web Development"
+        ]
     },
     {
         "@context": "https://schema.org",
@@ -95,6 +123,9 @@
         "@id": "https://angad07.com/#profilepage",
         "url": "https://angad07.com/",
         "name": "Angad Sharma | LMS & PHP Developer | Moodle Developer",
+        "primaryImageOfPage": {
+            "@id": "https://angad07.com/#primaryimage"
+        },
         "mainEntity": {
             "@id": "https://angad07.com/#person"
         },
@@ -210,10 +241,40 @@
                 <div class="profile-stage" data-tilt>
                     <canvas id="hero-3d-canvas" class="hero-3d-canvas" aria-hidden="true"></canvas>
                     <div class="stage-grid" aria-hidden="true"></div>
-                    <div class="profile-monogram" aria-hidden="true">
-                        <span>AS</span>
-                        <div class="orbit orbit-one"></div>
-                        <div class="orbit orbit-two"></div>
+
+                    <div class="profile-portal" id="profile-portal" tabindex="0" role="button" aria-label="Angad Sharma portrait photo. Click to view in original studio quality.">
+                        <div class="portal-halo" aria-hidden="true"></div>
+                        <div class="orbit orbit-one" aria-hidden="true"></div>
+                        <div class="orbit orbit-two" aria-hidden="true"></div>
+                        <div class="portal-frame">
+                            <picture>
+                                <source srcset="angad-sharma-lms.webp" type="image/webp">
+                                <img src="angad-sharma-lms.jpg"
+                                     alt="Angad Sharma LMS Associate and Moodle Developer portrait photo"
+                                     title="Angad Sharma LMS"
+                                     width="1024"
+                                     height="1024"
+                                     class="profile-img"
+                                     fetchpriority="high"
+                                     loading="eager"
+                                     decoding="async">
+                            </picture>
+                            <div class="portal-sheen" aria-hidden="true"></div>
+                            <div class="portal-scanline" aria-hidden="true"></div>
+                        </div>
+                        <div class="portal-badge" aria-hidden="true">
+                            <span class="portal-pulse-dot"></span>
+                            <span>Angad Sharma · LMS Engineer</span>
+                        </div>
+                        <button class="portal-zoom-btn" type="button" aria-label="Inspect original quality photo">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                            <span>Original 4K Quality</span>
+                        </button>
                     </div>
 
                     <div class="floating-card role-card">
@@ -235,7 +296,7 @@
                         <small>Working across product &amp; engineering</small>
                     </div>
 
-                    <div class="stage-caption"><span>01</span> Software with structure, clarity, and purpose.</div>
+                    <div class="stage-caption"><span>01</span> Interactive 3D Hologram &amp; Profile</div>
                 </div>
             </div>
 
@@ -253,7 +314,27 @@
                 <p class="section-index">01 / About</p>
                 <h2 id="about-title">About Angad Sharma</h2>
                 <p class="section-tagline">Engineering depth. Product awareness.</p>
-                <p>Angad Sharma is an LMS Associate and PHP Developer based in Noida, India. He specializes in building and maintaining Moodle-based learning management systems, designing role-aware dashboards, and developing the PHP and MySQL infrastructure that powers education technology workflows.</p>
+                <div class="about-lead-card">
+                    <div class="about-avatar-wrap" data-open-photo tabindex="0" role="button" aria-label="View Angad Sharma high resolution photo in original studio quality">
+                        <picture>
+                            <source srcset="angad-sharma-lms.webp" type="image/webp">
+                            <img src="angad-sharma-lms.jpg" alt="Angad Sharma LMS Associate and PHP Developer" width="100" height="100" class="about-avatar-img" loading="lazy">
+                        </picture>
+                        <span class="avatar-verified-badge" title="Verified LMS Professional">✓</span>
+                    </div>
+                    <div class="about-lead-content">
+                        <p><strong>Angad Sharma</strong> is an LMS Associate and PHP Developer based in Noida, India. He specializes in building and maintaining Moodle-based learning management systems, designing role-aware dashboards, and developing the PHP and MySQL infrastructure that powers education technology workflows.</p>
+                        <div class="about-meta-row">
+                            <span class="meta-pill">AeroBay · Noida</span>
+                            <span class="meta-pill">Moodle LMS</span>
+                            <span class="meta-pill">PHP &amp; MySQL</span>
+                            <button type="button" class="about-photo-cta" data-open-photo>
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                                <span>Original Photo (1024×1024)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="story-grid">
@@ -316,29 +397,213 @@
                 </div>
 
                 <div class="skills-grid">
-                    <article class="skill-card reveal">
-                        <div class="skill-icon">01</div><h3>Frontend</h3><p>Interfaces that remain clear under real product complexity.</p>
-                        <ul><li>HTML5</li><li>CSS3</li><li>JavaScript</li><li>jQuery</li><li>Bootstrap</li></ul>
+                    <!-- 01: FRONTEND -->
+                    <article class="skill-card reveal skill-card-frontend" data-tilt data-category="frontend">
+                        <div class="skill-card-glow" aria-hidden="true"></div>
+                        <div class="skill-card-header">
+                            <div class="skill-icon-orb" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                    <polyline points="7 9 10 12 7 15"></polyline>
+                                    <line x1="13" y1="15" x2="17" y2="15"></line>
+                                </svg>
+                            </div>
+                            <div class="skill-header-meta">
+                                <span class="skill-badge"><span class="badge-dot"></span>UI & Interaction</span>
+                                <span class="skill-number">01</span>
+                            </div>
+                        </div>
+                        <div class="skill-card-body">
+                            <h3>Frontend</h3>
+                            <p>Reactive, accessible interfaces engineered for high clarity under heavy enterprise data.</p>
+                            <ul class="skill-tags">
+                                <li><span class="tag-dot"></span>HTML5</li>
+                                <li><span class="tag-dot"></span>CSS3 / Animations</li>
+                                <li><span class="tag-dot"></span>JavaScript (ES6+)</li>
+                                <li><span class="tag-dot"></span>jQuery</li>
+                                <li><span class="tag-dot"></span>Bootstrap</li>
+                                <li><span class="tag-dot"></span>Responsive UI</li>
+                            </ul>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-metric"><span class="metric-live-dot"></span>Clean Architecture</span>
+                            <span class="skill-arrow-icon" aria-hidden="true">↗</span>
+                        </div>
                     </article>
-                    <article class="skill-card reveal">
-                        <div class="skill-icon">02</div><h3>Backend</h3><p>Business logic, permissions, plugins, and stable integrations.</p>
-                        <ul><li>PHP</li><li>Moodle LMS</li><li>C#</li><li>.NET MVC</li><li>Java</li></ul>
+
+                    <!-- 02: BACKEND -->
+                    <article class="skill-card reveal skill-card-backend" data-tilt data-category="backend">
+                        <div class="skill-card-glow" aria-hidden="true"></div>
+                        <div class="skill-card-header">
+                            <div class="skill-icon-orb" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                                    <rect x="9" y="9" width="6" height="6"></rect>
+                                    <line x1="9" y1="1" x2="9" y2="4"></line>
+                                    <line x1="15" y1="1" x2="15" y2="4"></line>
+                                    <line x1="9" y1="20" x2="9" y2="23"></line>
+                                    <line x1="15" y1="20" x2="15" y2="23"></line>
+                                    <line x1="20" y1="9" x2="23" y2="9"></line>
+                                    <line x1="20" y1="14" x2="23" y2="14"></line>
+                                    <line x1="1" y1="9" x2="4" y2="9"></line>
+                                    <line x1="1" y1="14" x2="4" y2="14"></line>
+                                </svg>
+                            </div>
+                            <div class="skill-header-meta">
+                                <span class="skill-badge"><span class="badge-dot"></span>Core Engine</span>
+                                <span class="skill-number">02</span>
+                            </div>
+                        </div>
+                        <div class="skill-card-body">
+                            <h3>Backend</h3>
+                            <p>Business logic, custom Moodle plugin APIs, role permissions, and resilient server services.</p>
+                            <ul class="skill-tags">
+                                <li><span class="tag-dot"></span>PHP 8+</li>
+                                <li><span class="tag-dot"></span>Moodle LMS API</li>
+                                <li><span class="tag-dot"></span>C#</li>
+                                <li><span class="tag-dot"></span>.NET MVC</li>
+                                <li><span class="tag-dot"></span>Java</li>
+                                <li><span class="tag-dot"></span>RESTful APIs</li>
+                            </ul>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-metric"><span class="metric-live-dot"></span>LMS Production Core</span>
+                            <span class="skill-arrow-icon" aria-hidden="true">↗</span>
+                        </div>
                     </article>
-                    <article class="skill-card reveal">
-                        <div class="skill-icon">03</div><h3>Database</h3><p>Data models and queries designed around the user workflow.</p>
-                        <ul><li>MySQL</li><li>SQL reporting</li><li>Schema design</li><li>Query optimization</li></ul>
+
+                    <!-- 03: DATABASE -->
+                    <article class="skill-card reveal skill-card-database" data-tilt data-category="database">
+                        <div class="skill-card-glow" aria-hidden="true"></div>
+                        <div class="skill-card-header">
+                            <div class="skill-icon-orb" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                </svg>
+                            </div>
+                            <div class="skill-header-meta">
+                                <span class="skill-badge"><span class="badge-dot"></span>Data Systems</span>
+                                <span class="skill-number">03</span>
+                            </div>
+                        </div>
+                        <div class="skill-card-body">
+                            <h3>Database</h3>
+                            <p>Schema modeling, indexing, and high-volume query tuning built for instant student analytics.</p>
+                            <ul class="skill-tags">
+                                <li><span class="tag-dot"></span>MySQL</li>
+                                <li><span class="tag-dot"></span>SQL Reporting</li>
+                                <li><span class="tag-dot"></span>Schema Design</li>
+                                <li><span class="tag-dot"></span>Query Tuning</li>
+                                <li><span class="tag-dot"></span>Relational Integrity</li>
+                            </ul>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-metric"><span class="metric-live-dot"></span>Zero-Lag Queries</span>
+                            <span class="skill-arrow-icon" aria-hidden="true">↗</span>
+                        </div>
                     </article>
-                    <article class="skill-card reveal">
-                        <div class="skill-icon">04</div><h3>DevOps</h3><p>Repeatable delivery and disciplined source control.</p>
-                        <ul><li>Git</li><li>GitHub Actions</li><li>SSH deploys</li><li>Linux</li></ul>
+
+                    <!-- 04: DEVOPS -->
+                    <article class="skill-card reveal skill-card-devops" data-tilt data-category="devops">
+                        <div class="skill-card-glow" aria-hidden="true"></div>
+                        <div class="skill-card-header">
+                            <div class="skill-icon-orb" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="18" cy="18" r="3"></circle>
+                                    <circle cx="6" cy="6" r="3"></circle>
+                                    <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
+                                    <line x1="6" y1="9" x2="6" y2="21"></line>
+                                </svg>
+                            </div>
+                            <div class="skill-header-meta">
+                                <span class="skill-badge"><span class="badge-dot"></span>CI/CD & Delivery</span>
+                                <span class="skill-number">04</span>
+                            </div>
+                        </div>
+                        <div class="skill-card-body">
+                            <h3>DevOps</h3>
+                            <p>Automated pipeline delivery, disciplined version branching, and reliable server deployments.</p>
+                            <ul class="skill-tags">
+                                <li><span class="tag-dot"></span>Git & GitHub</li>
+                                <li><span class="tag-dot"></span>GitHub Actions</li>
+                                <li><span class="tag-dot"></span>SSH Automation</li>
+                                <li><span class="tag-dot"></span>Linux (Ubuntu)</li>
+                                <li><span class="tag-dot"></span>Environment Config</li>
+                            </ul>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-metric"><span class="metric-live-dot"></span>Automated Deploys</span>
+                            <span class="skill-arrow-icon" aria-hidden="true">↗</span>
+                        </div>
                     </article>
-                    <article class="skill-card reveal">
-                        <div class="skill-icon">05</div><h3>Cloud</h3><p>Practical hosting for fast, dependable web delivery.</p>
-                        <ul><li>AWS EC2</li><li>GitHub Pages</li><li>Web hosting</li><li>DNS</li></ul>
+
+                    <!-- 05: CLOUD -->
+                    <article class="skill-card reveal skill-card-cloud" data-tilt data-category="cloud">
+                        <div class="skill-card-glow" aria-hidden="true"></div>
+                        <div class="skill-card-header">
+                            <div class="skill-icon-orb" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+                                    <polyline points="12 13 12 9 10 11"></polyline>
+                                    <path d="M12 9l2 2"></path>
+                                </svg>
+                            </div>
+                            <div class="skill-header-meta">
+                                <span class="skill-badge"><span class="badge-dot"></span>Hosting & Scalability</span>
+                                <span class="skill-number">05</span>
+                            </div>
+                        </div>
+                        <div class="skill-card-body">
+                            <h3>Cloud</h3>
+                            <p>Production cloud hosting, custom DNS routing, SSL certificates, and fault-tolerant server setup.</p>
+                            <ul class="skill-tags">
+                                <li><span class="tag-dot"></span>AWS EC2</li>
+                                <li><span class="tag-dot"></span>Cloudflare / DNS</li>
+                                <li><span class="tag-dot"></span>Web Hosting</li>
+                                <li><span class="tag-dot"></span>SSL / HTTPS</li>
+                                <li><span class="tag-dot"></span>GitHub Pages</li>
+                            </ul>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-metric"><span class="metric-live-dot"></span>99.9% Uptime Stack</span>
+                            <span class="skill-arrow-icon" aria-hidden="true">↗</span>
+                        </div>
                     </article>
-                    <article class="skill-card reveal">
-                        <div class="skill-icon">06</div><h3>Tools</h3><p>A focused workflow for investigation, implementation, and QA.</p>
-                        <ul><li>VS Code</li><li>GitHub</li><li>Browser DevTools</li><li>CLI</li></ul>
+
+                    <!-- 06: TOOLS -->
+                    <article class="skill-card reveal skill-card-tools" data-tilt data-category="tools">
+                        <div class="skill-card-glow" aria-hidden="true"></div>
+                        <div class="skill-card-header">
+                            <div class="skill-icon-orb" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="4 17 10 11 4 5"></polyline>
+                                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                                </svg>
+                            </div>
+                            <div class="skill-header-meta">
+                                <span class="skill-badge"><span class="badge-dot"></span>Tooling & QA</span>
+                                <span class="skill-number">06</span>
+                            </div>
+                        </div>
+                        <div class="skill-card-body">
+                            <h3>Tools</h3>
+                            <p>A rigorous inspection toolkit for profiling memory, debugging APIs, and end-to-end testing.</p>
+                            <ul class="skill-tags">
+                                <li><span class="tag-dot"></span>VS Code Pro</li>
+                                <li><span class="tag-dot"></span>GitHub CLI</li>
+                                <li><span class="tag-dot"></span>Browser DevTools</li>
+                                <li><span class="tag-dot"></span>Postman / REST</li>
+                                <li><span class="tag-dot"></span>Terminal / Zsh</li>
+                            </ul>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-metric"><span class="metric-live-dot"></span>Rapid Diagnostics</span>
+                            <span class="skill-arrow-icon" aria-hidden="true">↗</span>
+                        </div>
                     </article>
                 </div>
             </div>
@@ -654,8 +919,51 @@
         </div>
     </footer>
 
+    <!-- Original Quality Studio Photo Lightbox Modal -->
+    <div class="photo-modal" id="photo-modal" role="dialog" aria-modal="true" aria-labelledby="modal-photo-title" hidden>
+        <div class="photo-modal-backdrop" data-close-modal></div>
+        <div class="photo-modal-dialog">
+            <button class="photo-modal-close" type="button" aria-label="Close photo preview" data-close-modal>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="photo-modal-media">
+                <img src="angad-sharma-lms.jpg" alt="Angad Sharma LMS Associate and Moodle Developer Original Quality Portrait" width="1024" height="1024" class="photo-modal-img">
+                <div class="photo-modal-badge">
+                    <span class="photo-modal-dot"></span>
+                    <span>Studio Master · 1024 × 1024 px · Original Quality</span>
+                </div>
+            </div>
+            <div class="photo-modal-info">
+                <div class="photo-modal-header">
+                    <div>
+                        <span class="photo-modal-kicker">Verified Profile Photo</span>
+                        <h3 id="modal-photo-title">Angad Sharma</h3>
+                        <p class="photo-modal-role">LMS Associate &amp; Moodle Developer</p>
+                    </div>
+                    <a href="angad-sharma-lms.jpg" download="Angad-Sharma-LMS.jpg" class="button button-primary magnetic" target="_blank" rel="noopener">
+                        <span>Download Original (1024×1024)</span>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </a>
+                </div>
+                <div class="photo-modal-specs">
+                    <div><small>Organization</small><strong>AeroBay (Aviotron Aerospace)</strong></div>
+                    <div><small>Location</small><strong>Noida, Uttar Pradesh, India</strong></div>
+                    <div><small>Specialization</small><strong>LMS Architecture, Moodle, PHP, MySQL</strong></div>
+                    <div><small>Format &amp; Color</small><strong>JPEG (sRGB) · 1024 × 1024 · 300 DPI ready</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="cursor" aria-hidden="true"><span></span><i></i></div>
     <div class="contribution-tooltip" id="contribution-tooltip" role="tooltip" aria-hidden="true"></div>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=5" defer></script>
 </body>
 </html>
