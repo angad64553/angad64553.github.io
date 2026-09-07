@@ -16,13 +16,18 @@ const publicFiles = [
     'script.js',
     'sitemap.xml',
     'style.css',
+    'visual.css',
+    'finish.css',
+    'visual.js',
+    'hero-scene.js',
+    'assets',
     'thankyou.html'
 ];
 
 await rm(outputDirectory, { recursive: true, force: true });
 await mkdir(clientDirectory, { recursive: true });
 await mkdir(serverDirectory, { recursive: true });
-await Promise.all(publicFiles.map((file) => cp(file, join(clientDirectory, file))));
+await Promise.all(publicFiles.map((file) => cp(file, join(clientDirectory, file), { recursive: true })));
 await writeFile(
     join(serverDirectory, 'index.js'),
     'export default { fetch(request, env) { return env.ASSETS.fetch(request); } };\n'
