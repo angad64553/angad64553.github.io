@@ -5,6 +5,9 @@ const outputDirectory = 'dist';
 const clientDirectory = join(outputDirectory, 'client');
 const serverDirectory = join(outputDirectory, 'server');
 const publicFiles = [
+    'angad-sharma.jpg',
+    'angad-sharma.webp',
+    'angad-sharma-photo.jpg',
     'angad-sharma-lms.jpg',
     'angad-sharma-lms.webp',
     'favicon.svg',

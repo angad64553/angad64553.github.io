@@ -3,9 +3,21 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     <url>
         <loc>https://angad07.com/</loc>
-        <lastmod>2026-09-04</lastmod>
+        <lastmod>2026-09-21</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://angad07.com/angad-sharma.jpg</image:loc>
+            <image:title>Angad Sharma - Official Profile Photo &amp; Portrait</image:title>
+            <image:caption>Official high-resolution studio portrait photograph of Angad Sharma, Software Engineer, LMS Associate and Moodle Developer based in Noida, India</image:caption>
+            <image:geo_location>Noida, Uttar Pradesh, India</image:geo_location>
+        </image:image>
+        <image:image>
+            <image:loc>https://angad07.com/angad-sharma-photo.jpg</image:loc>
+            <image:title>Angad Sharma Photo | Official Portfolio Profile Picture</image:title>
+            <image:caption>Angad Sharma photo, headshot and portfolio profile picture - LMS Associate, Moodle and PHP Developer</image:caption>
+            <image:geo_location>Noida, Uttar Pradesh, India</image:geo_location>
+        </image:image>
         <image:image>
             <image:loc>https://angad07.com/angad-sharma-lms.jpg</image:loc>
             <image:title>Angad Sharma - LMS Associate, Moodle &amp; PHP Developer Photo</image:title>
