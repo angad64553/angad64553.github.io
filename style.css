@@ -1701,8 +1701,18 @@ img, svg { display: block; max-width: 100%; }
 ------------------------------------------------------------- */
 .site-footer { padding-block: 46px; border-top: 1px solid var(--line); background: var(--bg); transition: background .35s ease, border-color .35s ease; }
 .footer-inner { display: grid; grid-template-columns: 1fr 1.3fr 2fr auto; align-items: center; gap: 38px; }
-.footer-inner p { margin: 0; color: var(--text-soft); font-size: .7rem; line-height: 1.6; }.footer-inner p span { color: var(--text-faint); }
-.footer-inner nav { display: flex; gap: 24px; }.footer-inner nav a, .back-top { color: var(--text-faint); font-size: .66rem; font-weight: 500; transition: color .25s ease; }.footer-inner nav a:hover, .back-top:hover { color: var(--accent); }
+.footer-inner nav { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+.footer-inner nav a, .back-top { color: var(--text-faint); font-size: .66rem; font-weight: 500; transition: color .25s ease; }
+.footer-inner nav a:hover, .back-top:hover { color: var(--accent); }
+.footer-social-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-faint); font-size: .66rem; font-weight: 500; text-decoration: none; transition: color .2s ease, transform .2s ease; }
+.footer-social-link svg { flex-shrink: 0; transition: transform .2s ease; }
+.footer-social-link:hover { color: var(--accent); transform: translateY(-1px); }
+.footer-social-link:hover svg { transform: scale(1.15); }
+.footer-social-link.instagram:hover { color: #E1306C; }
+.footer-social-link.facebook:hover { color: #1877F2; }
+.footer-social-link.whatsapp:hover { color: #25D366; }
+.footer-social-link.linkedin:hover { color: #0A66C2; }
+.footer-social-link.github:hover { color: var(--text-strong, #ffffff); }
 .back-top { display: inline-flex; gap: 10px; cursor: pointer; }
 
 /* -------------------------------------------------------------

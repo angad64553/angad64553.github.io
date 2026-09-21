@@ -43,5 +43,8 @@ Then open `http://localhost:8000`.
 - Email: [angad64553@gmail.com](mailto:angad64553@gmail.com)
 - GitHub: [github.com/angad64553](https://github.com/angad64553)
 - LinkedIn: [angad-sharma-64553-](https://www.linkedin.com/in/angad-sharma-64553-)
+- Instagram: [@angad.sharma14](https://www.instagram.com/angad.sharma14/)
+- Facebook: [angad64553](https://www.facebook.com/angad64553)
+- WhatsApp: [+91 70524 78516](https://wa.me/917052478516)
 
 
