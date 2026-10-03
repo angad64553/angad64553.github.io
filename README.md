@@ -4,7 +4,7 @@ A premium, framework-free portfolio for an LMS Associate and PHP developer. The 
 
 ## Live site
 
-- [angad07.com](https://angad07.com/)
+- [angad64553.github.io](https://angad64553.github.io/)
 - [GitHub Pages project URL](https://angad64553.github.io/portfolio-website/)
 
 ## Built with
