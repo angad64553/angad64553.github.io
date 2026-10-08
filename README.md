@@ -1,6 +1,6 @@
 # Angad Sharma — Developer Portfolio
 
-A premium, framework-free portfolio for an LMS Associate and PHP developer. The experience is designed around engineering clarity, product storytelling, and fast delivery rather than decorative effects.
+A framework-free portfolio for an SDE and LMS Associate building Moodle, PHP, and MySQL systems — with a real-time 3D hero and evidence-first content.
 
 ## Live site
 
@@ -9,24 +9,21 @@ A premium, framework-free portfolio for an LMS Associate and PHP developer. The 
 
 ## Built with
 
-- Semantic HTML5
-- Modular, responsive CSS
-- Dependency-free JavaScript
+- Semantic HTML5, one CSS file, vanilla JavaScript — no framework
+- Three.js (vendored r128) for the real-time hero scene
 - Web3Forms contact delivery
-- GitHub Pages-compatible static assets
+- GitHub Pages, plus an AWS EC2 mirror deployed by GitHub Actions
 
-## Experience highlights
+## Highlights
 
-- Editorial dark visual system with a restrained accent palette
-- Product-style project mockups built entirely in HTML and CSS
-- Sticky blurred navigation, mobile menu, and section scroll spy
-- Layered ambient lighting, animated grid, subtle stars, grain, and cursor spotlight
-- Progressive blur reveals, magnetic actions, ripples, surface glow, and subtle card tilt
-- Live GitHub profile, commit, repository, star, streak, and contribution data
-- Accessible keyboard focus, semantic landmarks, and reduced-motion support
-- Floating-label contact form with inline validation and async status feedback
-- Printable résumé page
-- Open Graph, Twitter Card, JSON-LD, robots, and sitemap metadata
+- Interactive WebGL hero: orbital "learning system" with labels that track 3D nodes
+- 3D tilt-and-glare cards, scroll-driven perspective mockups, and a filling timeline
+- Dark and light themes, with a CSS 3D fallback when WebGL is unavailable
+- Live GitHub profile, contribution calendar, latest commit, and repositories
+- Reduced-motion support, keyboard-accessible navigation, and semantic landmarks
+- Printable résumé page; Open Graph, JSON-LD, robots, and sitemap metadata
+
+See [DESIGN.md](DESIGN.md) for the design system and motion rules.
 
 ## Local preview
 

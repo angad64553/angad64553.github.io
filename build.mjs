@@ -16,13 +16,10 @@ const publicFiles = [
     'og-image.svg',
     'resume.html',
     'robots.txt',
-    'script.js',
+    'main.js',
+    'scene.js',
+    'site.css',
     'sitemap.xml',
-    'style.css',
-    'visual.css',
-    'finish.css',
-    'visual.js',
-    'hero-scene.js',
     'assets',
     'thankyou.html'
 ];

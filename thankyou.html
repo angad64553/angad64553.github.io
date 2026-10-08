@@ -1,26 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-    <meta name="theme-color" content="#0a0a0b">
+    <meta name="theme-color" content="#06080f">
     <title>Message received — Angad Sharma</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .thanks { min-height: 100svh; display: grid; place-items: center; padding: 24px; }
-        .thanks-card { width: min(620px, 100%); padding: clamp(38px, 7vw, 74px); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); text-align: center; }
-        .thanks-mark { display: grid; width: 54px; height: 54px; place-items: center; margin: 0 auto 32px; border: 1px solid rgba(118,215,155,.3); border-radius: 50%; color: var(--success); font-size: 1.2rem; }
-        .thanks-card .section-index { margin: 0; }.thanks-card h1 { margin: 18px 0; font-size: clamp(2.8rem, 9vw, 5rem); font-weight: 500; letter-spacing: -.07em; line-height: 1; }
-        .thanks-card > p:not(.section-index) { max-width: 410px; margin: 0 auto 34px; color: var(--text-soft); }
-    </style>
+    <link rel="stylesheet" href="site.css?v=1">
+    <script>
+        try { if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
+    </script>
 </head>
 <body>
+    <div class="backdrop" aria-hidden="true"></div>
     <main class="thanks">
         <section class="thanks-card">
             <div class="thanks-mark" aria-hidden="true">✓</div>
-            <p class="section-index">Message received</p>
+            <p class="kicker">Message received</p>
             <h1>Thank you.</h1>
             <p>Your note made it through. I’ll read it carefully and get back to you as soon as I can.</p>
             <a class="button button-primary" href="index.html">Back to portfolio <span aria-hidden="true">↗</span></a>
