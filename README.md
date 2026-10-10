@@ -5,14 +5,15 @@ A framework-free portfolio for an SDE and LMS Associate building Moodle, PHP, an
 ## Live site
 
 - [angad64553.github.io](https://angad64553.github.io/)
-- [GitHub Pages project URL](https://angad64553.github.io/portfolio-website/)
+
+This is the only public portfolio URL. The former AWS-hosted site is retired.
 
 ## Built with
 
 - Semantic HTML5, one CSS file, vanilla JavaScript — no framework
 - Three.js (vendored r128) for the real-time hero scene
 - Web3Forms contact delivery
-- GitHub Pages, plus an AWS EC2 mirror deployed by GitHub Actions
+- GitHub Pages
 
 ## Highlights
 
@@ -24,6 +25,16 @@ A framework-free portfolio for an SDE and LMS Associate building Moodle, PHP, an
 - Printable résumé page; Open Graph, JSON-LD, robots, and sitemap metadata
 
 See [DESIGN.md](DESIGN.md) for the design system and motion rules.
+
+## Search indexing
+
+Canonical URLs, social metadata, structured data, and the sitemap point to
+`https://angad64553.github.io/`. Keep this address as the public portfolio link.
+The old EC2 deployment workflow has been removed.
+
+Google's existing search results require a separate Search Console update;
+changing this repository cannot delete a result from Google's index.
+See [SEARCH-INDEXING.md](SEARCH-INDEXING.md) for the exact account steps.
 
 ## Local preview
 
@@ -43,5 +54,4 @@ Then open `http://localhost:8000`.
 - Instagram: [@angad.sharma14](https://www.instagram.com/angad.sharma14/)
 - Facebook: [angad64553](https://www.facebook.com/angad64553)
 - WhatsApp: [+91 70524 78516](https://wa.me/917052478516)
-
 
