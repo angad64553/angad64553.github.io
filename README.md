@@ -2,18 +2,19 @@
 
 A framework-free portfolio for an SDE and LMS Associate building Moodle, PHP, and MySQL systems — with a real-time 3D hero and evidence-first content.
 
-## Live site
+## Live sites
 
-- [angad64553.github.io](https://angad64553.github.io/)
+- Preferred public/SEO URL: [angad.onslate.in](https://angad.onslate.in/)
+- GitHub Pages: [angad64553.github.io](https://angad64553.github.io/)
 
-This is the only public portfolio URL. The former AWS-hosted site is retired.
+Both platforms use the same source code. The former AWS-hosted site is retired.
 
 ## Built with
 
 - Semantic HTML5, one CSS file, vanilla JavaScript — no framework
 - Three.js (vendored r128) for the real-time hero scene
 - Web3Forms contact delivery
-- GitHub Pages
+- GitHub Pages and Zoho Catalyst Slate
 
 ## Highlights
 
@@ -29,12 +30,30 @@ See [DESIGN.md](DESIGN.md) for the design system and motion rules.
 ## Search indexing
 
 Canonical URLs, social metadata, structured data, and the sitemap point to
-`https://angad64553.github.io/`. Keep this address as the public portfolio link.
-The old EC2 deployment workflow has been removed.
+`https://angad.onslate.in/`. Use this address for public portfolio links.
+GitHub Pages remains accessible with the same content and points to Slate as
+the preferred canonical site. The existing Google verification tag is preserved.
 
 Google's existing search results require a separate Search Console update;
 changing this repository cannot delete a result from Google's index.
 See [SEARCH-INDEXING.md](SEARCH-INDEXING.md) for the exact account steps.
+
+## Deployment compatibility
+
+Keep the existing GitHub Pages deployment settings. The root HTML and relative
+asset paths remain directly publishable; no custom domain or redirect is required.
+There are no GitHub Actions workflows in this checkout.
+
+Zoho Catalyst Slate settings remain:
+
+- App: `angad-portfolio`; App Name: `angad64553-github-io`
+- Framework: Other; Root Path: `./`
+- Install Command: `npm install`
+- Build Command: `npm run build`
+- Build Path: `dist/client`
+
+The existing build script copies the static site, assets, and SEO files into
+`dist/client` without rewriting paths for either host.
 
 ## Local preview
 

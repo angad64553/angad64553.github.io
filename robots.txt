@@ -25,4 +25,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://angad64553.github.io/sitemap.xml
+Sitemap: https://angad.onslate.in/sitemap.xml
